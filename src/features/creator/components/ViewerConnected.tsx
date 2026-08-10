@@ -1,3 +1,4 @@
+import DemoPanel from '../../../components/common/DemoPanel';
 import type { Viewer } from '../../../types/demo';
 
 interface ViewerConnectedProps {
@@ -8,20 +9,16 @@ const ViewerConnected = ({
   viewer,
 }: ViewerConnectedProps) => {
   return (
-    <section className="viewerConnected">
-      <span className="viewerConnected__step">
-        Viewer connected
-      </span>
-
-      <h1 className="viewerConnected__title">
-        {viewer.username} joined the demo
-      </h1>
-
-      <p className="viewerConnected__description">
-        The viewer is connected and ready to receive
-        protected content.
-      </p>
-    </section>
+    <DemoPanel
+      eyebrow="Viewer connected"
+      title={`${viewer.username} joined the demo`}
+      description={
+        <>
+          The viewer is connected and ready to receive
+          protected content.
+        </>
+      }
+    />
   );
 };
 

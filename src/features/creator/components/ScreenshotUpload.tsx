@@ -6,6 +6,7 @@ import {
 } from 'react';
 
 import type { Viewer } from '../../../types/demo';
+import DemoPanel from '../../../components/common/DemoPanel';
 
 interface ScreenshotUploadProps {
   viewer: Viewer;
@@ -110,21 +111,17 @@ const ScreenshotUpload = ({
     }, [previewUrl]);
 
   return (
-    <section className="screenshotUpload">
-      <span className="screenshotUpload__step">
-        Content delivered
-      </span>
-
-      <h1 className="screenshotUpload__title">
-        Find the source
-      </h1>
-
-      <p className="screenshotUpload__description">
-        The protected content was delivered to{' '}
-        <strong>{viewer.username}</strong>.
-        Upload the leaked screenshot to identify
-        its source.
-      </p>
+      <DemoPanel
+        eyebrow="Content delivered"
+        title="Find the source"
+        description={
+          <>
+            The protected content was delivered to{' '}
+            <strong>{viewer.username}</strong>.
+            Upload the leaked screenshot to identify its source.
+          </>
+        }
+      >
 
       <label
         className="screenshotUpload__dropzone"
@@ -186,7 +183,7 @@ const ScreenshotUpload = ({
           ? 'Analysing...'
           : 'Analyse screenshot'}
       </button>
-    </section>
+    </DemoPanel>
   );
 };
 
