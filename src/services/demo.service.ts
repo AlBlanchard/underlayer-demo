@@ -1,5 +1,8 @@
 import { demoSessionMock } from '../mocks/demo.mock';
-import type { DemoSession, Viewer } from '../types/demo';
+import type {
+  DemoSession,
+  Viewer,
+} from '../types/demo';
 
 const delay = (duration: number) =>
   new Promise((resolve) => setTimeout(resolve, duration));
@@ -8,6 +11,15 @@ export const getDemoSession = async (): Promise<DemoSession> => {
   await delay(300);
 
   return structuredClone(demoSessionMock);
+};
+
+export const waitForViewer = async (): Promise<Viewer> => {
+  await delay(3000);
+
+  return {
+    id: crypto.randomUUID(),
+    username: 'Alexis',
+  };
 };
 
 export const connectViewer = async (
