@@ -1,19 +1,17 @@
+import DemoPanel from '../../../components/common/DemoPanel';
+
 const AnalysisProgress = () => {
   return (
-    <section className="analysisProgress">
-      <span className="analysisProgress__step">
-        Analysing
-      </span>
-
-      <h1 className="analysisProgress__title">
-        Analysing screenshot
-      </h1>
-
-      <p className="analysisProgress__description">
-        Underlayer is looking for the invisible
-        identifier embedded in the image.
-      </p>
-
+    <DemoPanel
+      eyebrow="Analysing"
+      title="Analysing screenshot"
+      description={
+        <>
+          Underlayer is looking for the invisible
+          identifier embedded in the image.
+        </>
+      }
+    >
       <div
         className="analysisProgress__loader"
         aria-hidden="true"
@@ -25,7 +23,7 @@ const AnalysisProgress = () => {
       >
         Searching for viewer identity...
       </p>
-    </section>
+    </DemoPanel>
   );
 };
 

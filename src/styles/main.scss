@@ -1,6 +1,9 @@
 @use './base/reset';
 @use './base/global';
 
+@use './components/demo-panel';
+@use './components/button';
+
 @use '../features/creator/styles/creator-page';
 @use '../features/creator/styles/qr-code-panel';
 @use '../features/creator/styles/viewer-connected';

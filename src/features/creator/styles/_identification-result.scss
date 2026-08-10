@@ -1,12 +1,17 @@
-.screenshotUpload,
-.analysisProgress,
 .identificationResult {
-  width: min(100%, 540px);
+  &__icon {
+    display: grid;
 
-  padding: 3rem;
+    width: 4rem;
+    height: 4rem;
+    margin: var(--space-xl) auto 0;
 
-  text-align: center;
+    place-items: center;
 
-  border: 1px solid #e8e8ec;
-  border-radius: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+
+    font-size: 1.75rem;
+    font-weight: 700;
+  }
 }
