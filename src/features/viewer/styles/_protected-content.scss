@@ -1,0 +1,48 @@
+.protectedContent {
+  width: min(100%, 480px);
+
+  text-align: center;
+
+  &__step {
+    display: block;
+
+    margin-bottom: 0.75rem;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    font-size: clamp(2rem, 10vw, 3rem);
+    line-height: 1.05;
+  }
+
+  &__description {
+    margin-top: 1rem;
+
+    color: #686874;
+    line-height: 1.6;
+  }
+
+  &__imageWrapper {
+    margin-top: 2rem;
+
+    overflow: hidden;
+
+    border-radius: 1rem;
+  }
+
+  &__image {
+    width: 100%;
+
+    object-fit: cover;
+  }
+
+  &__instruction {
+    margin-top: 1.5rem;
+
+    font-weight: 600;
+  }
+}
