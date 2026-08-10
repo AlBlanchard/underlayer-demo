@@ -5,10 +5,12 @@ import {
 
 import type { DemoSession } from '../../../types/demo';
 
-import {
-  getDemoSession,
-  waitForViewer,
-} from '../../../services/demo.service';
+import type { DemoSyncEvent } from '../../../services/demo-sync.service';
+
+
+import { getDemoSession } from '../../../services/demo.service';
+import { createDemoChannel } from '../../../services/demo-sync.service';
+
 
 import CreatorHeader from '../components/CreatorHeader';
 import QrCodePanel from '../components/QrCodePanel';
@@ -21,6 +23,8 @@ const CreatorPage = () => {
   const [error, setError] =
     useState<string | null>(null);
 
+  const sessionId = session?.id;
+
   useEffect(() => {
     let ignore = false;
 
@@ -29,29 +33,9 @@ const CreatorPage = () => {
         const currentSession =
           await getDemoSession();
 
-        if (ignore) {
-          return;
+        if (!ignore) {
+          setSession(currentSession);
         }
-
-        setSession(currentSession);
-
-        const viewer = await waitForViewer();
-
-        if (ignore) {
-          return;
-        }
-
-        setSession((currentSession) => {
-          if (!currentSession) {
-            return currentSession;
-          }
-
-          return {
-            ...currentSession,
-            viewer,
-            status: 'viewer-connected',
-          };
-        });
       } catch {
         if (!ignore) {
           setError(
@@ -67,6 +51,53 @@ const CreatorPage = () => {
       ignore = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!sessionId) {
+      return;
+    }
+
+    const channel = createDemoChannel();
+
+    const handleMessage = (
+      event: MessageEvent<DemoSyncEvent>,
+    ) => {
+      const message = event.data;
+
+      if (
+        message.type !== 'viewer-connected' ||
+        message.sessionId !== sessionId
+      ) {
+        return;
+      }
+
+      setSession((currentSession) => {
+        if (!currentSession) {
+          return currentSession;
+        }
+
+        return {
+          ...currentSession,
+          viewer: message.viewer,
+          status: 'viewer-connected',
+        };
+      });
+    };
+
+    channel.addEventListener(
+      'message',
+      handleMessage,
+    );
+
+    return () => {
+      channel.removeEventListener(
+        'message',
+        handleMessage,
+      );
+
+      channel.close();
+    };
+  }, [sessionId]);
 
   if (error) {
     return (
