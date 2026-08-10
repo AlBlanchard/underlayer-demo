@@ -4,7 +4,9 @@
 @use '../features/creator/styles/creator-page';
 @use '../features/creator/styles/qr-code-panel';
 @use '../features/creator/styles/viewer-connected';
-@use '../features/creator/styles/waiting-screenshot';
+@use '../features/creator/styles/screenshot-upload';
+@use '../features/creator/styles/analysis-progress';
+@use '../features/creator/styles/identification-result';
 
 @use '../features/viewer/styles/viewer-page';
 @use '../features/viewer/styles/viewer-identity';

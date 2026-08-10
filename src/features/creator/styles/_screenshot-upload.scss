@@ -1,0 +1,60 @@
+.screenshotUpload {
+  &__dropzone {
+    display: grid;
+    min-height: 260px;
+    margin-top: 2rem;
+
+    overflow: hidden;
+
+    cursor: pointer;
+    place-items: center;
+
+    border: 1px dashed #b8b8c0;
+    border-radius: 1rem;
+  }
+
+  &__input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    overflow: hidden;
+
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+
+    white-space: nowrap;
+  }
+
+  &__placeholder {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    padding: 2rem;
+  }
+
+  &__preview {
+    width: 100%;
+    max-height: 360px;
+
+    object-fit: contain;
+  }
+
+  &__button {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.875rem 1rem;
+
+    border: 0;
+    border-radius: 0.75rem;
+
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}
