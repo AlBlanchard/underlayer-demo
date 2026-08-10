@@ -8,6 +8,8 @@ import {
   encodeContent,
 } from '../../../services/demo.service';
 
+import { createDemoChannel } from '../../../services/demo-sync.service';
+
 import type {
   Viewer,
 } from '../../../types/demo';
@@ -24,13 +26,27 @@ const ViewerPage = () => {
   const [protectedImageUrl, setProtectedImageUrl] =
     useState<string | null>(null);
 
-  const handleJoin = async (
+    const handleJoin = async (
     username: string,
   ) => {
+    if (!sessionId) {
+      return;
+    }
+
     const connectedViewer =
       await connectViewer(username);
 
     setViewer(connectedViewer);
+
+    const channel = createDemoChannel();
+
+    channel.postMessage({
+      type: 'viewer-connected',
+      sessionId,
+      viewer: connectedViewer,
+    });
+
+    channel.close();
 
     const imageUrl =
       await encodeContent(connectedViewer);
