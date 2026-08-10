@@ -7,12 +7,15 @@ import type { DemoSession } from '../../../types/demo';
 
 import { getDemoSession } from '../../../services/demo.service';
 import { subscribeToDemoEvents } from '../../../services/demo-sync.service';
+import { analyseScreenshot } from '../../../services/demo.service';
 
 
 import CreatorHeader from '../components/CreatorHeader';
 import QrCodePanel from '../components/QrCodePanel';
 import ViewerConnected from '../components/ViewerConnected';
-import WaitingForScreenshot from '../components/WaitingForScreenshot';
+import ScreenshotUpload from '../components/ScreenshotUpload';
+import AnalysisProgress from '../components/AnalysisProgress';
+import IdentificationResult from '../components/IdentificationResult';
 
 const CreatorPage = () => {
   const [session, setSession] =
@@ -87,6 +90,56 @@ const CreatorPage = () => {
     return unsubscribe;
   }, [sessionId]);
 
+  const handleAnalyse = async (file: File) => {
+    if (!session?.viewer) {
+      return;
+    }
+
+    setSession((currentSession) => {
+      if (!currentSession) {
+        return currentSession;
+      }
+
+      return {
+        ...currentSession,
+        status: 'analysing',
+      };
+    });
+
+    try {
+      const identifiedViewer =
+        await analyseScreenshot(
+          file,
+          session.viewer,
+        );
+
+      setSession((currentSession) => {
+        if (!currentSession) {
+          return currentSession;
+        }
+
+        return {
+          ...currentSession,
+          viewer: identifiedViewer,
+          status: 'identified',
+        };
+      });
+    } catch (error) {
+      setSession((currentSession) => {
+        if (!currentSession) {
+          return currentSession;
+        }
+
+        return {
+          ...currentSession,
+          status: 'waiting-for-upload',
+        };
+      });
+
+      throw error;
+    }
+  };
+
   if (error) {
     return (
       <main>
@@ -120,10 +173,22 @@ const CreatorPage = () => {
         )}
 
         {session.status === 'waiting-for-upload' &&
-        session.viewer && (
-          <WaitingForScreenshot
-            viewer={session.viewer}
-          />
+          session.viewer && (
+            <ScreenshotUpload
+              viewer={session.viewer}
+              onAnalyse={handleAnalyse}
+            />
+        )}
+
+        {session.status === 'analysing' && (
+          <AnalysisProgress />
+        )}
+
+        {session.status === 'identified' &&
+          session.viewer && (
+            <IdentificationResult
+              viewer={session.viewer}
+            />
         )}
       </main>
     </div>

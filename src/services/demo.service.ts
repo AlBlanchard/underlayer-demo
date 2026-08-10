@@ -31,7 +31,7 @@ export const encodeContent = async (
 
   console.info(`Encoding content for ${viewer.username}`);
 
-  return '/demo/protected-image.jpg';
+  return '/demo/protected-image.png';
 };
 
 export const analyseScreenshot = async (
