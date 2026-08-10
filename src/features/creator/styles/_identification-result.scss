@@ -1,0 +1,12 @@
+.screenshotUpload,
+.analysisProgress,
+.identificationResult {
+  width: min(100%, 540px);
+
+  padding: 3rem;
+
+  text-align: center;
+
+  border: 1px solid #e8e8ec;
+  border-radius: 1.5rem;
+}
