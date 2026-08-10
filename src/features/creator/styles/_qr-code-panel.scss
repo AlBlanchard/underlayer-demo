@@ -1,0 +1,73 @@
+.qrPanel {
+  width: min(100%, 540px);
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 3rem;
+
+    text-align: center;
+
+    border: 1px solid #e8e8ec;
+    border-radius: 1.5rem;
+  }
+
+  &__step {
+    margin-bottom: 1rem;
+
+    color: #686874;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.1;
+  }
+
+  &__description {
+    max-width: 420px;
+    margin-top: 1rem;
+
+    color: #686874;
+    line-height: 1.6;
+  }
+
+  &__code {
+    width: 220px;
+    margin-top: 2rem;
+    padding: 1rem;
+
+    border: 1px solid #e8e8ec;
+    border-radius: 1rem;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+
+    margin-top: 1.5rem;
+
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  &__statusDot {
+    width: 0.625rem;
+    height: 0.625rem;
+
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  &__session {
+    margin-top: 1rem;
+
+    color: #92929d;
+  }
+}
