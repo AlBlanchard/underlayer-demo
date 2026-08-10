@@ -5,16 +5,14 @@ import {
 
 import type { DemoSession } from '../../../types/demo';
 
-import type { DemoSyncEvent } from '../../../services/demo-sync.service';
-
-
 import { getDemoSession } from '../../../services/demo.service';
-import { createDemoChannel } from '../../../services/demo-sync.service';
+import { subscribeToDemoEvents } from '../../../services/demo-sync.service';
 
 
 import CreatorHeader from '../components/CreatorHeader';
 import QrCodePanel from '../components/QrCodePanel';
 import ViewerConnected from '../components/ViewerConnected';
+import WaitingForScreenshot from '../components/WaitingForScreenshot';
 
 const CreatorPage = () => {
   const [session, setSession] =
@@ -57,46 +55,36 @@ const CreatorPage = () => {
       return;
     }
 
-    const channel = createDemoChannel();
-
-    const handleMessage = (
-      event: MessageEvent<DemoSyncEvent>,
-    ) => {
-      const message = event.data;
-
-      if (
-        message.type !== 'viewer-connected' ||
-        message.sessionId !== sessionId
-      ) {
-        return;
-      }
-
-      setSession((currentSession) => {
-        if (!currentSession) {
-          return currentSession;
+    const unsubscribe =
+      subscribeToDemoEvents((event) => {
+        if (event.sessionId !== sessionId) {
+          return;
         }
 
-        return {
-          ...currentSession,
-          viewer: message.viewer,
-          status: 'viewer-connected',
-        };
+        setSession((currentSession) => {
+          if (!currentSession) {
+            return currentSession;
+          }
+
+          switch (event.type) {
+            case 'viewer-connected':
+              return {
+                ...currentSession,
+                viewer: event.viewer,
+                status: 'viewer-connected',
+              };
+
+            case 'content-ready':
+              return {
+                ...currentSession,
+                viewer: event.viewer,
+                status: 'waiting-for-upload',
+              };
+          }
+        });
       });
-    };
 
-    channel.addEventListener(
-      'message',
-      handleMessage,
-    );
-
-    return () => {
-      channel.removeEventListener(
-        'message',
-        handleMessage,
-      );
-
-      channel.close();
-    };
+    return unsubscribe;
   }, [sessionId]);
 
   if (error) {
@@ -129,7 +117,14 @@ const CreatorPage = () => {
             <ViewerConnected
               viewer={session.viewer}
             />
-          )}
+        )}
+
+        {session.status === 'waiting-for-upload' &&
+        session.viewer && (
+          <WaitingForScreenshot
+            viewer={session.viewer}
+          />
+        )}
       </main>
     </div>
   );
