@@ -1,3 +1,4 @@
+import DemoPanel from '../../../components/common/DemoPanel';
 import type { Viewer } from '../../../types/demo';
 
 interface IdentificationResultProps {
@@ -8,27 +9,23 @@ const IdentificationResult = ({
   viewer,
 }: IdentificationResultProps) => {
   return (
-    <section className="identificationResult">
-      <span className="identificationResult__step">
-        Viewer identified
-      </span>
-
+    <DemoPanel
+      eyebrow="Viewer identified"
+      title={viewer.username}
+      description={
+        <>
+          Underlayer successfully identified the
+          viewer associated with this copy.
+        </>
+      }
+    >
       <div
         className="identificationResult__icon"
         aria-hidden="true"
       >
         ✓
       </div>
-
-      <h1 className="identificationResult__title">
-        {viewer.username}
-      </h1>
-
-      <p className="identificationResult__description">
-        Underlayer successfully identified the
-        viewer associated with this copy.
-      </p>
-    </section>
+    </DemoPanel>
   );
 };
 

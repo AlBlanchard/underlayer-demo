@@ -1,16 +1,17 @@
 .screenshotUpload {
   &__dropzone {
     display: grid;
+
     min-height: 260px;
-    margin-top: 2rem;
+    margin-top: var(--space-xl);
 
     overflow: hidden;
 
     cursor: pointer;
     place-items: center;
 
-    border: 1px dashed #b8b8c0;
-    border-radius: 1rem;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
   }
 
   &__input {
@@ -18,11 +19,15 @@
 
     width: 1px;
     height: 1px;
+    padding: 0;
+    margin: -1px;
 
     overflow: hidden;
 
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
+
+    border: 0;
 
     white-space: nowrap;
   }
@@ -32,7 +37,12 @@
     flex-direction: column;
     gap: 0.5rem;
 
-    padding: 2rem;
+    padding: var(--space-xl);
+
+    span,
+    small {
+      color: var(--color-text-muted);
+    }
   }
 
   &__preview {
@@ -42,19 +52,23 @@
     object-fit: contain;
   }
 
+  &__filename {
+    margin-top: var(--space-md);
+
+    overflow: hidden;
+
+    font-size: 0.875rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__error {
+    margin-top: var(--space-md);
+
+    font-size: 0.875rem;
+  }
+
   &__button {
-    width: 100%;
-    margin-top: 1.5rem;
-    padding: 0.875rem 1rem;
-
-    border: 0;
-    border-radius: 0.75rem;
-
-    cursor: pointer;
-
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
+    margin-top: var(--space-lg);
   }
 }
