@@ -1,8 +1,17 @@
+import CreatorHeader from '../components/CreatorHeader';
+import QrCodePanel from '../components/QrCodePanel';
+
 const CreatorPage = () => {
+  const sessionId = 'demo-123';
+
   return (
-    <main>
-      <h1>Creator</h1>
-    </main>
+    <div className="creatorPage">
+      <CreatorHeader />
+
+      <main className="creatorPage__main">
+        <QrCodePanel sessionId={sessionId} />
+      </main>
+    </div>
   );
 };
 
