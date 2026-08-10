@@ -13,15 +13,6 @@ export const getDemoSession = async (): Promise<DemoSession> => {
   return structuredClone(demoSessionMock);
 };
 
-export const waitForViewer = async (): Promise<Viewer> => {
-  await delay(3000);
-
-  return {
-    id: crypto.randomUUID(),
-    username: 'Alexis',
-  };
-};
-
 export const connectViewer = async (
   username: string,
 ): Promise<Viewer> => {
