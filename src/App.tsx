@@ -1,5 +1,7 @@
+import AppRouter from './router/AppRouter';
+
 const App = () => {
-  return <h1>Underlayer Demo</h1>;
+  return <AppRouter />;
 };
 
 export default App;
