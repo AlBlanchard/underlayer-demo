@@ -1,0 +1,31 @@
+.creatorPage {
+  min-height: 100vh;
+
+  &__main {
+    display: grid;
+    min-height: calc(100vh - 72px);
+    place-items: center;
+    padding: 2rem;
+  }
+}
+
+.creatorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 72px;
+  padding-inline: 2rem;
+
+  border-bottom: 1px solid #e8e8ec;
+
+  &__brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  &__label {
+    color: #686874;
+    font-size: 0.875rem;
+  }
+}
