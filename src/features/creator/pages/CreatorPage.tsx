@@ -61,40 +61,43 @@ const CreatorPage = () => {
     }
 
     const unsubscribe =
-      subscribeToDemoEvents((event) => {
-        if (event.sessionId !== sessionId) {
-          return;
-        }
+      subscribeToDemoEvents(
+        sessionId,
+        (event) => {
+          setSession(
+            (currentSession) => {
+              if (!currentSession) {
+                return currentSession;
+              }
 
-        setSession((currentSession) => {
-          if (!currentSession) {
-            return currentSession;
-          }
+              switch (event.type) {
+                case 'viewer-connected':
+                  return {
+                    ...currentSession,
+                    viewer: event.viewer,
+                    status:
+                      'viewer-connected',
+                  };
 
-          switch (event.type) {
-            case 'viewer-connected':
-              return {
-                ...currentSession,
-                viewer: event.viewer,
-                status: 'viewer-connected',
-              };
+                case 'encoding-started':
+                  return {
+                    ...currentSession,
+                    viewer: event.viewer,
+                    status: 'encoding',
+                  };
 
-            case 'encoding-started':
-              return {
-                ...currentSession,
-                viewer: event.viewer,
-                status: 'encoding',
-              };
-
-            case 'content-ready':
-              return {
-                ...currentSession,
-                viewer: event.viewer,
-                status: 'waiting-for-upload',
-              };
-          }
-        });
-      });
+                case 'content-ready':
+                  return {
+                    ...currentSession,
+                    viewer: event.viewer,
+                    status:
+                      'waiting-for-upload',
+                  };
+              }
+            },
+          );
+        },
+      );
 
     return unsubscribe;
   }, [sessionId]);
