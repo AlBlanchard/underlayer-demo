@@ -1,5 +1,6 @@
 import Button from '../../../components/common/Button';
 import DemoPanel from '../../../components/common/DemoPanel';
+import { useLanguage } from '../../../i18n/useLanguage';
 
 import type {
   Viewer,
@@ -14,16 +15,16 @@ const IdentificationResult = ({
   viewer,
   onRestart,
 }: IdentificationResultProps) => {
+  const { t } = useLanguage();
+
   return (
     <DemoPanel
       className="identificationResult"
-      eyebrow="Viewer identified"
+      eyebrow={t.creator.result.eyebrow}
       title={viewer.username}
       description={
         <>
-          Underlayer successfully
-          identified the viewer
-          associated with this copy.
+          {t.creator.result.description}
         </>
       }
     >
@@ -38,7 +39,7 @@ const IdentificationResult = ({
         type="button"
         onClick={onRestart}
       >
-        Start another demo
+        {t.creator.result.restart}
       </Button>
     </DemoPanel>
   );

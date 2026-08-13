@@ -1,38 +1,41 @@
+import { useLanguage } from '../../../i18n/useLanguage';
 import ViewerProgress from './ViewerProgress';
 
+
+
+
 const ScreenshotInstructions = () => {
+  const { t } = useLanguage();
+  
   return (
     <section className="screenshotInstructions">
       <ViewerProgress currentStep={3} />
 
       <div className="screenshotInstructions__content">
         <span className="screenshotInstructions__eyebrow">
-          Screenshot captured
+          {t.viewer.challenge.eyebrow}
         </span>
 
         <h1 className="screenshotInstructions__title">
-          Now try to break it.
+          {t.viewer.challenge.title}
         </h1>
 
         <p className="screenshotInstructions__description">
-          Modify your screenshot however you want.
-          Underlayer will try to identify its source
-          afterwards.
+          {t.viewer.challenge.description}
         </p>
 
         <ul className="screenshotInstructions__actions">
-          <li>Crop the image</li>
-          <li>Change contrast or brightness</li>
-          <li>Draw over it</li>
-          <li>Compress or resize it</li>
+          <li>{t.viewer.challenge.crop}</li>
+          <li>{t.viewer.challenge.contrast}</li>
+          <li>{t.viewer.challenge.draw}</li>
+          <li>{t.viewer.challenge.resize}</li>
         </ul>
 
         <div className="screenshotInstructions__next">
-          <span>Next</span>
+          <span>{t.viewer.challenge.next}</span>
 
           <strong>
-            Send the modified screenshot back to
-            the creator.
+            {t.viewer.challenge.instruction}
           </strong>
         </div>
       </div>

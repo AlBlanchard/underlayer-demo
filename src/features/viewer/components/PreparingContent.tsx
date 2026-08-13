@@ -1,6 +1,9 @@
+import { useLanguage } from '../../../i18n/useLanguage';
 import ViewerProgress from './ViewerProgress';
 
 const PreparingContent = () => {
+  const { t } = useLanguage();
+  
   return (
     <section className="preparingContent">
       <ViewerProgress currentStep={2} />
@@ -12,15 +15,14 @@ const PreparingContent = () => {
         />
 
         <h1 className="preparingContent__title">
-          Preparing your content
+          {t.viewer.preparing.title}
         </h1>
 
         <p
           className="preparingContent__description"
           role="status"
         >
-          Underlayer is generating a protected
-          version specifically for you.
+          {t.viewer.preparing.description}
         </p>
       </div>
     </section>

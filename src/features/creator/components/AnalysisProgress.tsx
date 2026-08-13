@@ -1,14 +1,18 @@
 import DemoPanel from '../../../components/common/DemoPanel';
+import { useLanguage } from '../../../i18n/useLanguage';
+
+
 
 const AnalysisProgress = () => {
+  const { t } = useLanguage();
+  
   return (
     <DemoPanel
-      eyebrow="Analysing"
-      title="Analysing screenshot"
+      eyebrow={t.creator.analysing.eyebrow}
+      title={t.creator.analysing.title}
       description={
         <>
-          Underlayer is looking for the invisible
-          identifier embedded in the image.
+          {t.creator.analysing.description}
         </>
       }
     >
@@ -21,7 +25,7 @@ const AnalysisProgress = () => {
         className="analysisProgress__status"
         role="status"
       >
-        Searching for viewer identity...
+        {t.creator.analysing.status}
       </p>
     </DemoPanel>
   );

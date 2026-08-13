@@ -1,4 +1,5 @@
 import DemoPanel from '../../../components/common/DemoPanel';
+import { useLanguage } from '../../../i18n/useLanguage';
 import type { Viewer } from '../../../types/demo';
 
 interface ViewerConnectedProps {
@@ -8,14 +9,15 @@ interface ViewerConnectedProps {
 const ViewerConnected = ({
   viewer,
 }: ViewerConnectedProps) => {
+  const { t } = useLanguage();
+  
   return (
     <DemoPanel
-      eyebrow="Viewer connected"
-      title={`${viewer.username} joined the demo`}
+      eyebrow={t.creator.viewerConnected.eyebrow}
+      title={`${viewer.username} ${t.creator.viewerConnected.title}`}
       description={
         <>
-          The viewer is connected and ready to receive
-          protected content.
+          {t.creator.viewerConnected.description}
         </>
       }
     />
