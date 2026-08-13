@@ -7,6 +7,7 @@ import {
 
 import type { Viewer } from '../../../types/demo';
 import DemoPanel from '../../../components/common/DemoPanel';
+import { useLanguage } from '../../../i18n/useLanguage';
 
 interface ScreenshotUploadProps {
   viewer: Viewer;
@@ -22,8 +23,7 @@ const ACCEPTED_TYPES = [
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 const ScreenshotUpload = ({
-  viewer,
-  onAnalyse,
+  onAnalyse
 }: ScreenshotUploadProps) => {
     
     const [file, setFile] = useState<File | null>(null);
@@ -37,14 +37,14 @@ const ScreenshotUpload = ({
     const selectFile = (selectedFile: File) => {
         if (!ACCEPTED_TYPES.includes(selectedFile.type)) {
         setError(
-            'Please select a PNG, JPEG or WebP image.',
+            t.creator.upload.errorType,
         );
         return;
         }
 
         if (selectedFile.size > MAX_FILE_SIZE) {
         setError(
-            'The image must be smaller than 10 MB.',
+            t.creator.upload.errorSize,
         );
         return;
         }
@@ -95,7 +95,7 @@ const ScreenshotUpload = ({
         await onAnalyse(file);
         } catch {
         setError(
-            'Unable to analyse this screenshot.',
+            t.creator.upload.error,
         );
 
         setIsAnalysing(false);
@@ -110,15 +110,15 @@ const ScreenshotUpload = ({
     };
     }, [previewUrl]);
 
+    const { t } = useLanguage();
+
   return (
       <DemoPanel
-        eyebrow="Content delivered"
-        title="Find the source"
+        eyebrow={t.creator.upload.eyebrow}
+        title={t.creator.upload.title}
         description={
           <>
-            The protected content was delivered to{' '}
-            <strong>{viewer.username}</strong>.
-            Upload the leaked screenshot to identify its source.
+            {t.creator.upload.description}
           </>
         }
       >
@@ -145,14 +145,14 @@ const ScreenshotUpload = ({
           />
         ) : (
           <div className="screenshotUpload__placeholder">
-            <strong>Drop the screenshot here</strong>
+            <strong>{t.creator.upload.drop}</strong>
 
             <span>
-              or click to select an image
+              {t.creator.upload.select}
             </span>
 
             <small>
-              PNG, JPEG or WebP · max 10 MB
+              PNG, JPEG, WebP · max 10 MB
             </small>
           </div>
         )}
@@ -180,8 +180,8 @@ const ScreenshotUpload = ({
         onClick={handleAnalyse}
       >
         {isAnalysing
-          ? 'Analysing...'
-          : 'Analyse screenshot'}
+          ? t.creator.upload.analysing
+          : t.creator.upload.button}
       </button>
     </DemoPanel>
   );

@@ -1,18 +1,23 @@
+import { useLanguage } from '../../../i18n/useLanguage';
+
 interface ViewerProgressProps {
   currentStep: 1 | 2 | 3;
 }
 
+
 const ViewerProgress = ({
   currentStep,
 }: ViewerProgressProps) => {
+  const { t } = useLanguage();
+
   return (
     <div
       className="viewerProgress"
-      aria-label={`Step ${currentStep} of 3`}
+      aria-label={`${t.viewer.progress.step} ${currentStep} ${t.viewer.progress.of} 3`}
     >
       <div className="viewerProgress__header">
         <span>
-          Step {currentStep} of 3
+          {t.viewer.progress.step} {currentStep} {t.viewer.progress.of} 3
         </span>
 
         <span>

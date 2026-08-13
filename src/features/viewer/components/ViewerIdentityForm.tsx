@@ -4,10 +4,12 @@ import {
 } from 'react';
 
 import ViewerProgress from './ViewerProgress';
+import { useLanguage } from '../../../i18n/useLanguage';
 
 interface ViewerIdentityFormProps {
   onSubmit: (username: string) => Promise<void>;
 }
+
 
 const ViewerIdentityForm = ({
   onSubmit,
@@ -43,23 +45,24 @@ const ViewerIdentityForm = ({
     }
   };
 
+  
+  const { t } = useLanguage();
+
   return (
     <section className="viewerIdentity">
       <ViewerProgress currentStep={1} />
 
       <div className="viewerIdentity__content">
         <span className="viewerIdentity__eyebrow">
-          Viewer identity
+          {t.viewer.identity.eyebrow}
         </span>
 
         <h1 className="viewerIdentity__title">
-          Who are you?
+          {t.viewer.identity.title}
         </h1>
 
         <p className="viewerIdentity__description">
-          Choose a temporary name for this demo.
-          Underlayer will associate the protected
-          content with this identity.
+          {t.viewer.identity.description}
         </p>
 
         <form
@@ -70,7 +73,7 @@ const ViewerIdentityForm = ({
             className="viewerIdentity__label"
             htmlFor="viewer-username"
           >
-            Viewer name
+            {t.viewer.identity.placeholder}
           </label>
 
           <input
@@ -81,7 +84,7 @@ const ViewerIdentityForm = ({
             onChange={(event) =>
               setUsername(event.target.value)
             }
-            placeholder="e.g. Alexis"
+            placeholder={t.viewer.identity.placeholder}
             autoComplete="off"
             maxLength={32}
             required
@@ -93,8 +96,8 @@ const ViewerIdentityForm = ({
             disabled={!trimmedUsername || isSubmitting}
           >
             {isSubmitting
-              ? 'Joining...'
-              : 'Continue'}
+              ? t.viewer.identity.joining
+              : t.viewer.identity.button}
           </button>
 
           {error && (
