@@ -3,21 +3,30 @@ import {
   useState,
 } from 'react';
 
-import type { DemoSession } from '../../../types/demo';
-
-import { getDemoSession } from '../../../services/demo.service';
-import { subscribeToDemoEvents } from '../../../services/demo-sync.service';
-import { analyseScreenshot } from '../../../services/demo.service';
-
-
-import CreatorHeader from '../components/CreatorHeader';
-import QrCodePanel from '../components/QrCodePanel';
-import ViewerConnected from '../components/ViewerConnected';
-import ScreenshotUpload from '../components/ScreenshotUpload';
-import AnalysisProgress from '../components/AnalysisProgress';
-import IdentificationResult from '../components/IdentificationResult';
 import DemoProgress from '../../../components/layout/DemoProgress';
+
+import {
+  analyseScreenshot,
+  getDemoSession,
+} from '../../../services/demo.service';
+
+import {
+  subscribeToConnectionStatus,
+  subscribeToDemoEvents,
+  type DemoConnectionStatus,
+} from '../../../services/demo-sync.service';
+
+import type {
+  DemoSession,
+} from '../../../types/demo';
+
+import AnalysisProgress from '../components/AnalysisProgress';
+import CreatorHeader from '../components/CreatorHeader';
 import EncodingProgress from '../components/EncodingProgress';
+import IdentificationResult from '../components/IdentificationResult';
+import QrCodePanel from '../components/QrCodePanel';
+import ScreenshotUpload from '../components/ScreenshotUpload';
+import ViewerConnected from '../components/ViewerConnected';
 
 const CreatorPage = () => {
   const [session, setSession] =
@@ -26,27 +35,35 @@ const CreatorPage = () => {
   const [error, setError] =
     useState<string | null>(null);
 
+  const [
+    connectionStatus,
+    setConnectionStatus,
+  ] = useState<DemoConnectionStatus>(
+    'connecting',
+  );
+
   const sessionId = session?.id;
 
   useEffect(() => {
     let ignore = false;
 
-    const initializeSession = async () => {
-      try {
-        const currentSession =
-          await getDemoSession();
+    const initializeSession =
+      async () => {
+        try {
+          const currentSession =
+            await getDemoSession();
 
-        if (!ignore) {
-          setSession(currentSession);
+          if (!ignore) {
+            setSession(currentSession);
+          }
+        } catch {
+          if (!ignore) {
+            setError(
+              'Unable to initialize the demo session.',
+            );
+          }
         }
-      } catch {
-        if (!ignore) {
-          setError(
-            'Unable to initialize the demo session.',
-          );
-        }
-      }
-    };
+      };
 
     void initializeSession();
 
@@ -54,6 +71,17 @@ const CreatorPage = () => {
       ignore = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!sessionId) {
+      return;
+    }
+
+    return subscribeToConnectionStatus(
+      sessionId,
+      setConnectionStatus,
+    );
+  }, [sessionId]);
 
   useEffect(() => {
     if (!sessionId) {
@@ -74,7 +102,8 @@ const CreatorPage = () => {
                 case 'viewer-connected':
                   return {
                     ...currentSession,
-                    viewer: event.viewer,
+                    viewer:
+                      event.viewer,
                     status:
                       'viewer-connected',
                   };
@@ -82,14 +111,17 @@ const CreatorPage = () => {
                 case 'encoding-started':
                   return {
                     ...currentSession,
-                    viewer: event.viewer,
-                    status: 'encoding',
+                    viewer:
+                      event.viewer,
+                    status:
+                      'encoding',
                   };
 
                 case 'content-ready':
                   return {
                     ...currentSession,
-                    viewer: event.viewer,
+                    viewer:
+                      event.viewer,
                     status:
                       'waiting-for-upload',
                   };
@@ -102,55 +134,91 @@ const CreatorPage = () => {
     return unsubscribe;
   }, [sessionId]);
 
-  const handleAnalyse = async (file: File) => {
+  const handleAnalyse = async (
+    file: File,
+  ) => {
     if (!session?.viewer) {
       return;
     }
 
-    setSession((currentSession) => {
-      if (!currentSession) {
-        return currentSession;
-      }
+    const viewer =
+      session.viewer;
 
-      return {
-        ...currentSession,
-        status: 'analysing',
-      };
-    });
+    setSession(
+      (currentSession) => {
+        if (!currentSession) {
+          return currentSession;
+        }
+
+        return {
+          ...currentSession,
+          status: 'analysing',
+        };
+      },
+    );
 
     try {
       const identifiedViewer =
         await analyseScreenshot(
           file,
-          session.viewer,
+          viewer,
         );
 
-      setSession((currentSession) => {
-        if (!currentSession) {
-          return currentSession;
-        }
+      setSession(
+        (currentSession) => {
+          if (!currentSession) {
+            return currentSession;
+          }
 
-        return {
-          ...currentSession,
-          viewer: identifiedViewer,
-          status: 'identified',
-        };
-      });
+          return {
+            ...currentSession,
+            viewer:
+              identifiedViewer,
+            status:
+              'identified',
+          };
+        },
+      );
     } catch (error) {
-      setSession((currentSession) => {
-        if (!currentSession) {
-          return currentSession;
-        }
+      setSession(
+        (currentSession) => {
+          if (!currentSession) {
+            return currentSession;
+          }
 
-        return {
-          ...currentSession,
-          status: 'waiting-for-upload',
-        };
-      });
+          return {
+            ...currentSession,
+            status:
+              'waiting-for-upload',
+          };
+        },
+      );
 
       throw error;
     }
   };
+
+  const handleRestart =
+    async () => {
+      try {
+        setError(null);
+
+        const newSession =
+          await getDemoSession();
+
+        setSession({
+          ...newSession,
+          viewer: null,
+          protectedImageUrl: null,
+          status:
+            'waiting-for-viewer',
+        });
+      } catch {
+        setError(
+          'Unable to restart the demo session.',
+        );
+      }
+    };
 
   if (error) {
     return (
@@ -172,43 +240,77 @@ const CreatorPage = () => {
     <div className="creatorPage">
       <CreatorHeader />
 
-      <main className="creatorPage__main">
-        <DemoProgress status={session.status} />
+      {connectionStatus !==
+        'connected' && (
+        <div
+          className="creatorPage__connectionStatus"
+          role="status"
+        >
+          {connectionStatus ===
+          'connecting'
+            ? 'Connecting to demo session...'
+            : 'Connection lost. Reconnecting...'}
+        </div>
+      )}
 
-        <div className="creatorPage__content"> 
-          {session.status === 'waiting-for-viewer' && (
-            <QrCodePanel sessionId={session.id} />
+      <main className="creatorPage__main">
+        <DemoProgress
+          status={session.status}
+        />
+
+        <div className="creatorPage__content">
+          {session.status ===
+            'waiting-for-viewer' && (
+            <QrCodePanel
+              sessionId={session.id}
+            />
           )}
 
-          {session.status === 'viewer-connected' &&
+          {session.status ===
+            'viewer-connected' &&
             session.viewer && (
               <ViewerConnected
-                viewer={session.viewer}
+                viewer={
+                  session.viewer
+                }
               />
+            )}
+
+          {session.status ===
+            'encoding' && (
+            <EncodingProgress />
           )}
 
-          {session.status === 'waiting-for-upload' &&
+          {session.status ===
+            'waiting-for-upload' &&
             session.viewer && (
               <ScreenshotUpload
-                viewer={session.viewer}
-                onAnalyse={handleAnalyse}
+                viewer={
+                  session.viewer
+                }
+                onAnalyse={
+                  handleAnalyse
+                }
               />
-          )}
+            )}
 
-          {session.status === 'analysing' && (
+          {session.status ===
+            'analysing' && (
             <AnalysisProgress />
           )}
 
-          {session.status === 'identified' &&
+          {session.status ===
+            'identified' &&
             session.viewer && (
               <IdentificationResult
-                viewer={session.viewer}
+                viewer={
+                  session.viewer
+                }
+                onRestart={
+                  handleRestart
+                }
               />
-          )}
-
-          {session.status === 'encoding' && (
-            <EncodingProgress />
-          )}
+            )}
         </div>
       </main>
     </div>
