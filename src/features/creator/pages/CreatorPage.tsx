@@ -17,6 +17,7 @@ import ScreenshotUpload from '../components/ScreenshotUpload';
 import AnalysisProgress from '../components/AnalysisProgress';
 import IdentificationResult from '../components/IdentificationResult';
 import DemoProgress from '../../../components/layout/DemoProgress';
+import EncodingProgress from '../components/EncodingProgress';
 
 const CreatorPage = () => {
   const [session, setSession] =
@@ -76,6 +77,13 @@ const CreatorPage = () => {
                 ...currentSession,
                 viewer: event.viewer,
                 status: 'viewer-connected',
+              };
+
+            case 'encoding-started':
+              return {
+                ...currentSession,
+                viewer: event.viewer,
+                status: 'encoding',
               };
 
             case 'content-ready':
@@ -193,6 +201,10 @@ const CreatorPage = () => {
               <IdentificationResult
                 viewer={session.viewer}
               />
+          )}
+
+          {session.status === 'encoding' && (
+            <EncodingProgress />
           )}
         </div>
       </main>
