@@ -39,33 +39,39 @@ const ViewerPage = () => {
 
   const handleJoin = async (
     username: string,
-    ) => {
-      if (!sessionId) {
-        return;
-      }
+  ) => {
+    if (!sessionId) {
+      return;
+    }
 
-      const connectedViewer =
-        await connectViewer(username);
+    const connectedViewer =
+      await connectViewer(username);
 
-      setViewer(connectedViewer);
-      setStep('preparing');
+    setViewer(connectedViewer);
+    setStep('preparing');
 
-      sendDemoEvent({
-        type: 'viewer-connected',
-        sessionId,
-        viewer: connectedViewer,
-      });
+    sendDemoEvent({
+      type: 'viewer-connected',
+      sessionId,
+      viewer: connectedViewer,
+    });
 
-      const imageUrl =
-        await encodeContent(connectedViewer);
+    sendDemoEvent({
+      type: 'encoding-started',
+      sessionId,
+      viewer: connectedViewer,
+    });
 
-      setProtectedImageUrl(imageUrl);
+    const imageUrl =
+      await encodeContent(connectedViewer);
 
-      sendDemoEvent({
-        type: 'content-ready',
-        sessionId,
-        viewer: connectedViewer,
-      });
+    setProtectedImageUrl(imageUrl);
+
+    sendDemoEvent({
+      type: 'content-ready',
+      sessionId,
+      viewer: connectedViewer,
+    });
 
     setStep('content');
   };
