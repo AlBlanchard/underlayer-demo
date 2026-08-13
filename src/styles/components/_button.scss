@@ -1,15 +1,38 @@
 .button {
   width: 100%;
-  padding: 0.875rem 1rem;
+  padding: 0.9rem 1rem;
 
-  border: 0;
+  color: #fff;
+  background: var(--color-primary);
+
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
 
   cursor: pointer;
+
   font: inherit;
+  font-weight: 650;
+
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast),
+    opacity var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--color-primary-soft);
+    outline-offset: 3px;
+  }
 
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.45;
   }
 }
