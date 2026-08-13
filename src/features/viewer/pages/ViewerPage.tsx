@@ -50,13 +50,13 @@ const ViewerPage = () => {
     setViewer(connectedViewer);
     setStep('preparing');
 
-    sendDemoEvent({
+    await sendDemoEvent({
       type: 'viewer-connected',
       sessionId,
       viewer: connectedViewer,
     });
 
-    sendDemoEvent({
+    await sendDemoEvent({
       type: 'encoding-started',
       sessionId,
       viewer: connectedViewer,
@@ -67,7 +67,7 @@ const ViewerPage = () => {
 
     setProtectedImageUrl(imageUrl);
 
-    sendDemoEvent({
+    await sendDemoEvent({
       type: 'content-ready',
       sessionId,
       viewer: connectedViewer,
