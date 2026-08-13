@@ -1,14 +1,16 @@
 import DemoPanel from '../../../components/common/DemoPanel';
+import { useLanguage } from '../../../i18n/useLanguage';
 
 const EncodingProgress = () => {
+  const { t } = useLanguage();
+  
   return (
     <DemoPanel
-      eyebrow="Protecting content"
-      title="Encoding viewer identity"
+      eyebrow={t.creator.encoding.eyebrow}
+      title={t.creator.encoding.title}
       description={
         <>
-          Underlayer is generating a protected copy
-          linked to this viewer.
+          {t.creator.encoding.description}
         </>
       }
     >
@@ -21,7 +23,7 @@ const EncodingProgress = () => {
         className="encodingProgress__status"
         role="status"
       >
-        Embedding invisible identifier...
+        {t.creator.encoding.status}
       </p>
     </DemoPanel>
   );

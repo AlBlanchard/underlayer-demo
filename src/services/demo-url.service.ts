@@ -1,8 +1,20 @@
+import type {
+  Language,
+} from '../i18n/i18n.types';
+
 export const getViewerDemoUrl = (
   sessionId: string,
+  language: Language,
 ) => {
-  return new URL(
+  const url = new URL(
     `/viewer/${sessionId}`,
     window.location.origin,
-  ).toString();
+  );
+
+  url.searchParams.set(
+    'lang',
+    language,
+  );
+
+  return url.toString();
 };

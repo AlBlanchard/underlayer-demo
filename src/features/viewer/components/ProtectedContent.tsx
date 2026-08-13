@@ -4,12 +4,15 @@ import Button from '../../../components/common/Button';
 import type { Viewer } from '../../../types/demo';
 
 import ViewerProgress from './ViewerProgress';
+import { useLanguage } from '../../../i18n/useLanguage';
 
 interface ProtectedContentProps {
   viewer: Viewer;
   imageUrl: string;
   onScreenshotTaken: () => void;
 }
+
+
 
 const ProtectedContent = ({
   viewer,
@@ -19,21 +22,23 @@ const ProtectedContent = ({
   const [isImageLoaded, setIsImageLoaded] =
     useState(false);
 
+  const { t } = useLanguage();
+
   return (
     <section className="protectedContent">
       <ViewerProgress currentStep={2} />
 
       <div className="protectedContent__content">
         <span className="protectedContent__eyebrow">
-          Content ready
+          {t.viewer.content.eyebrow}
         </span>
 
         <h1 className="protectedContent__title">
-          This copy is yours
+          {t.viewer.content.title}
         </h1>
 
         <p className="protectedContent__description">
-          This protected image was generated for{' '}
+          {t.viewer.content.description}{' '}
           <strong>{viewer.username}</strong>.
         </p>
 
@@ -44,11 +49,11 @@ const ProtectedContent = ({
 
           <div>
             <strong>
-              Take a screenshot of the image
+              {t.viewer.content.instruction}
             </strong>
 
             <p>
-              You can modify it afterwards.
+              {t.viewer.content.hint}
             </p>
           </div>
         </div>
@@ -86,7 +91,7 @@ const ProtectedContent = ({
           disabled={!isImageLoaded}
           onClick={onScreenshotTaken}
         >
-          I have my screenshot
+          {t.viewer.content.button}
         </Button>
       </div>
     </section>

@@ -2,25 +2,30 @@ import { QRCodeSVG } from 'qrcode.react';
 
 import DemoPanel from '../../../components/common/DemoPanel';
 import { getViewerDemoUrl } from '../../../services/demo-url.service';
+import { useLanguage } from '../../../i18n/useLanguage';
 
 interface QrCodePanelProps {
   sessionId: string;
 }
 
+
+
 const QrCodePanel = ({
   sessionId,
 }: QrCodePanelProps) => {
-  const viewerUrl = getViewerDemoUrl(sessionId);
+  const { language } = useLanguage();
+  const viewerUrl = getViewerDemoUrl(sessionId, language);
+
+  const { t } = useLanguage();
 
   return (
     <DemoPanel
       className="qrPanel"
-      eyebrow="Step 1"
-      title="Connect a viewer"
+      eyebrow={t.creator.qr.eyebrow}
+      title={t.creator.qr.title}
       description={
         <>
-          Scan this QR code with a mobile device
-          to join the demonstration.
+          {t.creator.qr.description}
         </>
       }
     >
@@ -40,7 +45,7 @@ const QrCodePanel = ({
           aria-hidden="true"
         />
 
-        <span>Waiting for viewer...</span>
+        <span>{t.creator.qr.waiting}</span>
       </div>
 
       <small className="qrPanel__session">
