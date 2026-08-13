@@ -9,6 +9,11 @@ export type DemoSyncEvent =
       viewer: Viewer;
     }
   | {
+      type: 'encoding-started';
+      sessionId: string;
+      viewer: Viewer;
+    }
+  | {
       type: 'content-ready';
       sessionId: string;
       viewer: Viewer;
