@@ -16,6 +16,7 @@ import ViewerConnected from '../components/ViewerConnected';
 import ScreenshotUpload from '../components/ScreenshotUpload';
 import AnalysisProgress from '../components/AnalysisProgress';
 import IdentificationResult from '../components/IdentificationResult';
+import DemoProgress from '../../../components/layout/DemoProgress';
 
 const CreatorPage = () => {
   const [session, setSession] =
@@ -161,35 +162,39 @@ const CreatorPage = () => {
       <CreatorHeader />
 
       <main className="creatorPage__main">
-        {session.status === 'waiting-for-viewer' && (
-          <QrCodePanel sessionId={session.id} />
-        )}
+        <DemoProgress status={session.status} />
 
-        {session.status === 'viewer-connected' &&
-          session.viewer && (
-            <ViewerConnected
-              viewer={session.viewer}
-            />
-        )}
+        <div className="creatorPage__content"> 
+          {session.status === 'waiting-for-viewer' && (
+            <QrCodePanel sessionId={session.id} />
+          )}
 
-        {session.status === 'waiting-for-upload' &&
-          session.viewer && (
-            <ScreenshotUpload
-              viewer={session.viewer}
-              onAnalyse={handleAnalyse}
-            />
-        )}
+          {session.status === 'viewer-connected' &&
+            session.viewer && (
+              <ViewerConnected
+                viewer={session.viewer}
+              />
+          )}
 
-        {session.status === 'analysing' && (
-          <AnalysisProgress />
-        )}
+          {session.status === 'waiting-for-upload' &&
+            session.viewer && (
+              <ScreenshotUpload
+                viewer={session.viewer}
+                onAnalyse={handleAnalyse}
+              />
+          )}
 
-        {session.status === 'identified' &&
-          session.viewer && (
-            <IdentificationResult
-              viewer={session.viewer}
-            />
-        )}
+          {session.status === 'analysing' && (
+            <AnalysisProgress />
+          )}
+
+          {session.status === 'identified' &&
+            session.viewer && (
+              <IdentificationResult
+                viewer={session.viewer}
+              />
+          )}
+        </div>
       </main>
     </div>
   );

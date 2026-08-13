@@ -1,8 +1,10 @@
 @use './base/reset';
 @use './base/global';
+@use './base/tokens';
 
 @use './components/demo-panel';
 @use './components/button';
+@use './components/demo-progress';
 
 @use '../features/creator/styles/creator-page';
 @use '../features/creator/styles/qr-code-panel';
