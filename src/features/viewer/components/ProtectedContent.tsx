@@ -1,6 +1,8 @@
-import type { Viewer } from '../../../types/demo';
+import { useState } from 'react';
 
 import Button from '../../../components/common/Button';
+import type { Viewer } from '../../../types/demo';
+
 import ViewerProgress from './ViewerProgress';
 
 interface ProtectedContentProps {
@@ -14,6 +16,9 @@ const ProtectedContent = ({
   imageUrl,
   onScreenshotTaken,
 }: ProtectedContentProps) => {
+  const [isImageLoaded, setIsImageLoaded] =
+    useState(false);
+
   return (
     <section className="protectedContent">
       <ViewerProgress currentStep={2} />
@@ -49,15 +54,36 @@ const ProtectedContent = ({
         </div>
 
         <div className="protectedContent__imageWrapper">
+          {!isImageLoaded && (
+            <div
+              className="protectedContent__imageLoader"
+              role="status"
+              aria-label="Loading protected content"
+            >
+              <span aria-hidden="true" />
+            </div>
+          )}
+
           <img
-            className="protectedContent__image"
+            className={[
+              'protectedContent__image',
+              isImageLoaded
+                ? 'protectedContent__image--loaded'
+                : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
             src={imageUrl}
             alt="Protected Underlayer demo content"
+            onLoad={() => {
+              setIsImageLoaded(true);
+            }}
           />
         </div>
 
         <Button
           type="button"
+          disabled={!isImageLoaded}
           onClick={onScreenshotTaken}
         >
           I have my screenshot
