@@ -1,32 +1,53 @@
 .demoPanel {
-  width: min(100%, 540px);
-  padding: 3rem;
+  width: min(100%, 560px);
+  padding: var(--space-2xl);
 
   text-align: center;
+
+  background: var(--color-surface);
 
   border: 1px solid var(--color-border);
   border-radius: var(--radius-panel);
 
-  &__eyebrow {
-    display: block;
-    margin-bottom: 1rem;
+  box-shadow:
+    0 24px 80px rgb(0 0 0 / 22%);
 
-    font-size: 0.75rem;
-    font-weight: 600;
+  &__eyebrow {
+    display: inline-flex;
+
+    margin-bottom: var(--space-md);
+    padding: 0.4rem 0.7rem;
+
+    color: var(--color-primary);
+
+    background: var(--color-primary-soft);
+
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   &__title {
     font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
   }
 
   &__description {
-    max-width: 420px;
-    margin: 1rem auto 0;
+    max-width: 430px;
+    margin: var(--space-md) auto 0;
 
     color: var(--color-text-muted);
+
+    font-size: 0.95rem;
     line-height: 1.6;
+
+    strong {
+      color: var(--color-text);
+    }
   }
 }
