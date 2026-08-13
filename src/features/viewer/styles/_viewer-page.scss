@@ -1,8 +1,32 @@
 .viewerPage {
-  display: grid;
+  min-height: 100svh;
 
-  min-height: 100vh;
-  padding: 1.5rem;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgb(119 103 255 / 12%),
+      transparent 24rem
+    ),
+    var(--color-background);
+}
 
-  place-items: center;
+.viewerIdentity,
+.preparingContent,
+.protectedContent,
+.screenshotInstructions {
+  width: min(100%, 480px);
+  min-height: 100svh;
+
+  margin-inline: auto;
+  padding:
+    max(1.25rem, env(safe-area-inset-top))
+    1.25rem
+    max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.viewerIdentity__content,
+.preparingContent__content,
+.protectedContent__content,
+.screenshotInstructions__content {
+  margin-top: clamp(3rem, 10vh, 6rem);
 }
