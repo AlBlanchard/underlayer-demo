@@ -1,3 +1,8 @@
+import { QRCodeSVG } from 'qrcode.react';
+
+import DemoPanel from '../../../components/common/DemoPanel';
+import { getViewerDemoUrl } from '../../../services/demo-url.service';
+
 interface QrCodePanelProps {
   sessionId: string;
 }
@@ -5,43 +10,43 @@ interface QrCodePanelProps {
 const QrCodePanel = ({
   sessionId,
 }: QrCodePanelProps) => {
+  const viewerUrl = getViewerDemoUrl(sessionId);
+
   return (
-    <section className="qrPanel">
-      <div className="qrPanel__content">
-        <span className="qrPanel__step">
-          Step 1
-        </span>
-
-        <h1 className="qrPanel__title">
-          Connect a viewer
-        </h1>
-
-        <p className="qrPanel__description">
+    <DemoPanel
+      className="qrPanel"
+      eyebrow="Step 1"
+      title="Connect a viewer"
+      description={
+        <>
           Scan this QR code with a mobile device
           to join the demonstration.
-        </p>
-
-        <div className="qrPanel__code">
-          <img
-            src="/demo/qr-placeholder.webp"
-            alt="QR code to join the Underlayer demo"
-          />
-        </div>
-
-        <div className="qrPanel__status">
-          <span
-            className="qrPanel__statusDot"
-            aria-hidden="true"
-          />
-
-          <span>Waiting for viewer...</span>
-        </div>
-
-        <small className="qrPanel__session">
-          Session: {sessionId}
-        </small>
+        </>
+      }
+    >
+      <div className="qrPanel__code">
+        <QRCodeSVG
+          value={viewerUrl}
+          size={220}
+          level="M"
+          marginSize={2}
+          title="Join Underlayer demo"
+        />
       </div>
-    </section>
+
+      <div className="qrPanel__status">
+        <span
+          className="qrPanel__statusDot"
+          aria-hidden="true"
+        />
+
+        <span>Waiting for viewer...</span>
+      </div>
+
+      <small className="qrPanel__session">
+        Session: {sessionId}
+      </small>
+    </DemoPanel>
   );
 };
 
