@@ -16,6 +16,14 @@ import type {
 
 import ProtectedContent from '../components/ProtectedContent';
 import ViewerIdentityForm from '../components/ViewerIdentityForm';
+import ScreenshotInstructions from '../components/ScreenshotInstructions';
+import PreparingContent from '../components/PreparingContent';
+
+type ViewerStep =
+  | 'identity'
+  | 'preparing'
+  | 'content'
+  | 'instructions';
 
 const ViewerPage = () => {
   const { sessionId } = useParams();
@@ -26,34 +34,40 @@ const ViewerPage = () => {
   const [protectedImageUrl, setProtectedImageUrl] =
     useState<string | null>(null);
 
+  const [step, setStep] =
+    useState<ViewerStep>('identity');
+
   const handleJoin = async (
     username: string,
-  ) => {
-    if (!sessionId) {
-      return;
-    }
+    ) => {
+      if (!sessionId) {
+        return;
+      }
 
-    const connectedViewer =
-      await connectViewer(username);
+      const connectedViewer =
+        await connectViewer(username);
 
-    setViewer(connectedViewer);
+      setViewer(connectedViewer);
+      setStep('preparing');
 
-    sendDemoEvent({
-      type: 'viewer-connected',
-      sessionId,
-      viewer: connectedViewer,
-    });
+      sendDemoEvent({
+        type: 'viewer-connected',
+        sessionId,
+        viewer: connectedViewer,
+      });
 
-    const imageUrl =
-      await encodeContent(connectedViewer);
+      const imageUrl =
+        await encodeContent(connectedViewer);
 
-    setProtectedImageUrl(imageUrl);
+      setProtectedImageUrl(imageUrl);
 
-    sendDemoEvent({
-      type: 'content-ready',
-      sessionId,
-      viewer: connectedViewer,
-    });
+      sendDemoEvent({
+        type: 'content-ready',
+        sessionId,
+        viewer: connectedViewer,
+      });
+
+    setStep('content');
   };
 
   if (!sessionId) {
@@ -66,23 +80,30 @@ const ViewerPage = () => {
 
   return (
     <main className="viewerPage">
-      {!viewer && (
+      {step === 'identity' && (
         <ViewerIdentityForm
           onSubmit={handleJoin}
         />
       )}
 
-      {viewer && !protectedImageUrl && (
-        <section>
-          <p>Preparing your protected content...</p>
-        </section>
+      {step === 'preparing' && (
+        <PreparingContent />
       )}
 
-      {viewer && protectedImageUrl && (
-        <ProtectedContent
-          viewer={viewer}
-          imageUrl={protectedImageUrl}
-        />
+      {step === 'content' &&
+        viewer &&
+        protectedImageUrl && (
+          <ProtectedContent
+            viewer={viewer}
+            imageUrl={protectedImageUrl}
+            onScreenshotTaken={() =>
+              setStep('instructions')
+            }
+          />
+        )}
+
+      {step === 'instructions' && (
+        <ScreenshotInstructions />
       )}
     </main>
   );
