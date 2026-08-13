@@ -1,0 +1,61 @@
+.screenshotInstructions {
+  &__eyebrow {
+    color: var(--color-primary);
+
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin-top: var(--space-md);
+
+    font-size: clamp(2.5rem, 12vw, 4rem);
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+
+  &__description {
+    margin-top: var(--space-lg);
+
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  &__actions {
+    display: grid;
+    gap: var(--space-sm);
+
+    margin: var(--space-xl) 0 0;
+    padding: 0;
+
+    list-style: none;
+
+    li {
+      padding: 1rem;
+
+      background: var(--color-surface);
+
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+    }
+  }
+
+  &__next {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+
+    border-top: 1px solid var(--color-border);
+
+    span {
+      color: var(--color-text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+  }
+}

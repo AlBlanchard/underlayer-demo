@@ -3,6 +3,8 @@ import {
   useState,
 } from 'react';
 
+import ViewerProgress from './ViewerProgress';
+
 interface ViewerIdentityFormProps {
   onSubmit: (username: string) => Promise<void>;
 }
@@ -43,63 +45,68 @@ const ViewerIdentityForm = ({
 
   return (
     <section className="viewerIdentity">
-      <span className="viewerIdentity__step">
-        Step 1
-      </span>
+      <ViewerProgress currentStep={1} />
 
-      <h1 className="viewerIdentity__title">
-        Join the demo
-      </h1>
+      <div className="viewerIdentity__content">
+        <span className="viewerIdentity__eyebrow">
+          Viewer identity
+        </span>
 
-      <p className="viewerIdentity__description">
-        Choose a temporary viewer name for this
-        demonstration.
-      </p>
+        <h1 className="viewerIdentity__title">
+          Who are you?
+        </h1>
 
-      <form
-        className="viewerIdentity__form"
-        onSubmit={handleSubmit}
-      >
-        <label
-          className="viewerIdentity__label"
-          htmlFor="viewer-username"
+        <p className="viewerIdentity__description">
+          Choose a temporary name for this demo.
+          Underlayer will associate the protected
+          content with this identity.
+        </p>
+
+        <form
+          className="viewerIdentity__form"
+          onSubmit={handleSubmit}
         >
-          Viewer name
-        </label>
-
-        <input
-          id="viewer-username"
-          className="viewerIdentity__input"
-          type="text"
-          value={username}
-          onChange={(event) =>
-            setUsername(event.target.value)
-          }
-          placeholder="e.g. Alexis"
-          autoComplete="off"
-          maxLength={32}
-          required
-        />
-
-        <button
-          className="viewerIdentity__submit"
-          type="submit"
-          disabled={!trimmedUsername || isSubmitting}
-        >
-          {isSubmitting
-            ? 'Joining...'
-            : 'Continue'}
-        </button>
-
-        {error && (
-          <p
-            className="viewerIdentity__error"
-            role="alert"
+          <label
+            className="viewerIdentity__label"
+            htmlFor="viewer-username"
           >
-            {error}
-          </p>
-        )}
-      </form>
+            Viewer name
+          </label>
+
+          <input
+            id="viewer-username"
+            className="viewerIdentity__input"
+            type="text"
+            value={username}
+            onChange={(event) =>
+              setUsername(event.target.value)
+            }
+            placeholder="e.g. Alexis"
+            autoComplete="off"
+            maxLength={32}
+            required
+          />
+
+          <button
+            className="viewerIdentity__submit"
+            type="submit"
+            disabled={!trimmedUsername || isSubmitting}
+          >
+            {isSubmitting
+              ? 'Joining...'
+              : 'Continue'}
+          </button>
+
+          {error && (
+            <p
+              className="viewerIdentity__error"
+              role="alert"
+            >
+              {error}
+            </p>
+          )}
+        </form>
+      </div>
     </section>
   );
 };
