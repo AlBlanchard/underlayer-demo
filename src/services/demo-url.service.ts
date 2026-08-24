@@ -1,13 +1,13 @@
 import type {
   Language,
-} from '../i18n/i18n.types';
+} from '@/i18n/i18n.types';
 
 export const getViewerDemoUrl = (
   sessionId: string,
   language: Language,
 ) => {
   const url = new URL(
-    `/viewer/${sessionId}`,
+    `/demo/${sessionId}`,
     window.location.origin,
   );
 

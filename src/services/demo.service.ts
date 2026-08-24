@@ -1,8 +1,8 @@
-import { demoSessionMock } from '../mocks/demo.mock';
+import { demoSessionMock } from '@/mocks/demo.mock';
 import type {
   DemoSession,
   Viewer,
-} from '../types/demo';
+} from '@/types/demo';
 
 const delay = (duration: number) =>
   new Promise((resolve) => setTimeout(resolve, duration));

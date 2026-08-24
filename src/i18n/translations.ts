@@ -4,7 +4,7 @@ export const translations = {
       demo: 'Démonstration Underlayer',
     },
 
-    creator: {
+    admin: {
       progress: {
         connect: 'Connexion',
         deliver: 'Protection',
@@ -76,7 +76,7 @@ export const translations = {
       },
     },
 
-    viewer: {
+    user: {
       identity: {
         eyebrow: 'Identité',
         title: 'Qui êtes-vous ?',
@@ -137,7 +137,7 @@ export const translations = {
       demo: 'Underlayer Demo',
     },
 
-    creator: {
+    admin: {
       progress: {
         connect: 'Connect',
         deliver: 'Protect',
@@ -209,7 +209,7 @@ export const translations = {
       },
     },
 
-    viewer: {
+    user: {
       identity: {
         eyebrow: 'Viewer identity',
         title: 'Who are you?',
