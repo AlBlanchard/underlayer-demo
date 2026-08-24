@@ -4,19 +4,22 @@
 
 @use './components/demo-panel';
 @use './components/button';
-@use './components/demo-progress';
 
 @use '@/features/admin/styles/admin-page';
 @use '@/features/admin/styles/qr-code-panel';
 @use '@/features/admin/styles/user-connected';
-@use '@/features/admin/styles/screenshot-upload';
-@use '@/features/admin/styles/analysis-progress';
-@use '@/features/admin/styles/identification-result';
+
+// ADMIN
 @use '@/features/admin/styles/encoding-progress';
 
+// DEMO
+@use '@/features/demo/styles/analysis-progress';
 @use '@/features/demo/styles/demo-page';
-@use '@/features/demo/styles/viewer-identity';
-@use '@/features/demo/styles/protected-content';
-@use '@/features/demo/styles/viewer-progress';
-@use '@/features/demo/styles/screenshot-instructions';
+@use '@/features/demo/styles/fullscreen-image';
+@use '@/features/demo/styles/identification-result';
 @use '@/features/demo/styles/preparing-content';
+@use '@/features/demo/styles/protected-content';
+@use '@/features/demo/styles/screenshot-upload';
+@use '@/features/demo/styles/viewer-identity';
+@use '@/features/demo/styles/role-transition';
+@use '@/features/demo/styles/demo-progress';

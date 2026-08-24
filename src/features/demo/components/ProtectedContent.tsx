@@ -3,7 +3,8 @@ import { useState } from 'react';
 import Button from '@/components/common/Button';
 import type { Viewer } from '@/types/demo';
 
-import ViewerProgress from './ViewerProgress';
+import FullscreenImage from './FullscreenImage';
+
 import { useLanguage } from '@/i18n/useLanguage';
 
 interface ProtectedContentProps {
@@ -11,8 +12,6 @@ interface ProtectedContentProps {
   imageUrl: string;
   onScreenshotTaken: () => void;
 }
-
-
 
 const ProtectedContent = ({
   viewer,
@@ -22,11 +21,13 @@ const ProtectedContent = ({
   const [isImageLoaded, setIsImageLoaded] =
     useState(false);
 
-  const { t } = useLanguage();
+  const [isFullscreen, setIsFullscreen] =
+    useState(false);
+
+  const { t, language } = useLanguage();
 
   return (
     <section className="protectedContent">
-      <ViewerProgress currentStep={2} />
 
       <div className="protectedContent__content">
         <span className="protectedContent__eyebrow">
@@ -58,12 +59,30 @@ const ProtectedContent = ({
           </div>
         </div>
 
-        <div className="protectedContent__imageWrapper">
+        <button
+          type="button"
+          className="protectedContent__imageWrapper"
+          onClick={() => {
+            if (isImageLoaded) {
+              setIsFullscreen(true);
+            }
+          }}
+          disabled={!isImageLoaded}
+          aria-label={
+            language === 'fr'
+              ? 'Ouvrir l’image en plein écran'
+              : 'Open image fullscreen'
+          }
+        >
           {!isImageLoaded && (
             <div
               className="protectedContent__imageLoader"
               role="status"
-              aria-label="Loading protected content"
+              aria-label={
+                language === 'fr'
+                  ? 'Chargement du contenu protégé'
+                  : 'Loading protected content'
+              }
             >
               <span aria-hidden="true" />
             </div>
@@ -79,12 +98,21 @@ const ProtectedContent = ({
               .filter(Boolean)
               .join(' ')}
             src={imageUrl}
-            alt="Protected Underlayer demo content"
+            alt=""
             onLoad={() => {
               setIsImageLoaded(true);
             }}
           />
-        </div>
+
+          {isImageLoaded && (
+            <span
+              className="protectedContent__fullscreenHint"
+              aria-hidden="true"
+            >
+              ⛶
+            </span>
+          )}
+        </button>
 
         <Button
           type="button"
@@ -94,6 +122,15 @@ const ProtectedContent = ({
           {t.user.content.button}
         </Button>
       </div>
+
+      {isFullscreen && (
+        <FullscreenImage
+          imageUrl={imageUrl}
+          onClose={() => {
+            setIsFullscreen(false);
+          }}
+        />
+      )}
     </section>
   );
 };
