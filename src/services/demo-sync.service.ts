@@ -2,20 +2,47 @@ import type { Viewer } from '@/types/demo';
 
 export type DemoSyncEvent =
   | {
-      type: 'viewer-connected';
+      type:
+        'viewer-connected';
       sessionId: string;
       viewer: Viewer;
     }
   | {
-      type: 'encoding-started';
+      type:
+        'encoding-started';
       sessionId: string;
       viewer: Viewer;
     }
   | {
-      type: 'content-ready';
+      type:
+        'content-ready';
       sessionId: string;
       viewer: Viewer;
-    };
+    }
+  | {
+      type:
+        'screenshot-uploaded';
+      sessionId: string;
+      viewer: Viewer;
+      screenshotUrl: string;
+    }
+  | {
+      type:
+        'analysis-started';
+      sessionId: string;
+      viewer: Viewer;
+    }
+  | {
+      type:
+        'viewer-identified';
+      sessionId: string;
+      viewer: Viewer;
+      identifiedViewer: Viewer;
+    }
+  | {
+    type: 'session-restarted';
+    sessionId: string;
+  };
 
 export type DemoConnectionStatus =
   | 'connecting'
@@ -29,6 +56,16 @@ type DemoSyncListener = (
 type ConnectionListener = (
   status: DemoConnectionStatus,
 ) => void;
+
+type AdminSyncListener = (
+  event: DemoSyncEvent,
+) => void;
+
+let adminSocket: WebSocket | null =
+  null;
+
+const adminListeners =
+  new Set<AdminSyncListener>();
 
 interface DemoConnection {
   socket: WebSocket | null;
@@ -318,6 +355,103 @@ export const subscribeToConnectionStatus = (
 
   return () => {
     connection.connectionListeners.delete(
+      listener,
+    );
+  };
+};
+
+const getAdminSyncUrl = () => {
+  const baseUrl =
+    import.meta.env
+      .VITE_DEMO_SYNC_URL;
+
+  if (!baseUrl) {
+    throw new Error(
+      'VITE_DEMO_SYNC_URL is not configured.',
+    );
+  }
+
+  const url =
+    new URL(baseUrl);
+
+  url.searchParams.set(
+    'role',
+    'admin',
+  );
+
+  return url.toString();
+};
+
+const connectAdmin = () => {
+  if (
+    adminSocket?.readyState ===
+      WebSocket.OPEN ||
+    adminSocket?.readyState ===
+      WebSocket.CONNECTING
+  ) {
+    return;
+  }
+
+  adminSocket =
+    new WebSocket(
+      getAdminSyncUrl(),
+    );
+
+  adminSocket.addEventListener(
+    'message',
+    (message) => {
+      try {
+        const event =
+          JSON.parse(
+            String(message.data),
+          ) as DemoSyncEvent;
+
+        adminListeners.forEach(
+          (listener) => {
+            listener(event);
+          },
+        );
+      } catch {
+        console.error(
+          'Invalid admin sync message received.',
+        );
+      }
+    },
+  );
+
+  adminSocket.addEventListener(
+    'close',
+    () => {
+      adminSocket = null;
+
+      window.setTimeout(
+        () => {
+          connectAdmin();
+        },
+        1500,
+      );
+    },
+  );
+
+  adminSocket.addEventListener(
+    'error',
+    () => {
+      adminSocket?.close();
+    },
+  );
+};
+
+export const subscribeToAdminEvents = (
+  listener: AdminSyncListener,
+) => {
+  adminListeners.add(
+    listener,
+  );
+
+  connectAdmin();
+
+  return () => {
+    adminListeners.delete(
       listener,
     );
   };
