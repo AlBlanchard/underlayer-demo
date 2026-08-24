@@ -5,9 +5,9 @@ import {
   useState,
 } from 'react';
 
-import type { Viewer } from '../../../types/demo';
-import DemoPanel from '../../../components/common/DemoPanel';
-import { useLanguage } from '../../../i18n/useLanguage';
+import type { Viewer } from '@/types/demo';
+import DemoPanel from '@/components/common/DemoPanel';
+import { useLanguage } from '@/i18n/useLanguage';
 
 interface ScreenshotUploadProps {
   viewer: Viewer;
@@ -37,14 +37,14 @@ const ScreenshotUpload = ({
     const selectFile = (selectedFile: File) => {
         if (!ACCEPTED_TYPES.includes(selectedFile.type)) {
         setError(
-            t.creator.upload.errorType,
+            t.admin.upload.errorType,
         );
         return;
         }
 
         if (selectedFile.size > MAX_FILE_SIZE) {
         setError(
-            t.creator.upload.errorSize,
+            t.admin.upload.errorSize,
         );
         return;
         }
@@ -95,7 +95,7 @@ const ScreenshotUpload = ({
         await onAnalyse(file);
         } catch {
         setError(
-            t.creator.upload.error,
+            t.admin.upload.error,
         );
 
         setIsAnalysing(false);
@@ -114,11 +114,11 @@ const ScreenshotUpload = ({
 
   return (
       <DemoPanel
-        eyebrow={t.creator.upload.eyebrow}
-        title={t.creator.upload.title}
+        eyebrow={t.admin.upload.eyebrow}
+        title={t.admin.upload.title}
         description={
           <>
-            {t.creator.upload.description}
+            {t.admin.upload.description}
           </>
         }
       >
@@ -145,10 +145,10 @@ const ScreenshotUpload = ({
           />
         ) : (
           <div className="screenshotUpload__placeholder">
-            <strong>{t.creator.upload.drop}</strong>
+            <strong>{t.admin.upload.drop}</strong>
 
             <span>
-              {t.creator.upload.select}
+              {t.admin.upload.select}
             </span>
 
             <small>
@@ -180,8 +180,8 @@ const ScreenshotUpload = ({
         onClick={handleAnalyse}
       >
         {isAnalysing
-          ? t.creator.upload.analysing
-          : t.creator.upload.button}
+          ? t.admin.upload.analysing
+          : t.admin.upload.button}
       </button>
     </DemoPanel>
   );

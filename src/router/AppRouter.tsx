@@ -5,9 +5,9 @@ import {
   Routes,
 } from 'react-router';
 
-import CreatorPage from '../features/creator/pages/CreatorPage';
-import ViewerPage from '../features/viewer/pages/ViewerPage';
-import NotFoundPage from '../pages/NotFoundPage';
+import AdminPage from '@/features/admin/pages/AdminPage';
+import DemoPage from '@/features/demo/pages/DemoPage';
+import NotFoundPage from '@/pages/NotFoundPage';
 
 const AppRouter = () => {
   return (
@@ -15,20 +15,28 @@ const AppRouter = () => {
       <Routes>
         <Route
           path="/"
-          element={<Navigate to="/creator" replace />}
+          element={
+            <Navigate
+              to="/admin"
+              replace
+            />
+          }
         />
 
         <Route
-          path="/creator"
-          element={<CreatorPage />}
+          path="/admin"
+          element={<AdminPage />}
         />
 
         <Route
-          path="/viewer/:sessionId"
-          element={<ViewerPage />}
+          path="/demo/:sessionId"
+          element={<DemoPage />}
         />
 
-        <Route path="*" element={<NotFoundPage />} />
+        <Route
+          path="*"
+          element={<NotFoundPage />}
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -1,6 +1,6 @@
-import { useLanguage } from '../../../i18n/useLanguage';
+import { useLanguage } from '@/i18n/useLanguage';
 
-const CreatorHeader = () => {
+const AdminHeader = () => {
   const {
     language,
     setLanguage,
@@ -8,13 +8,13 @@ const CreatorHeader = () => {
 
   
   return (
-    <header className="creatorHeader">
-      <span className="creatorHeader__brand">
+    <header className="adminHeader">
+      <span className="adminHeader__brand">
         Underlayer
       </span>
 
       <div
-        className="creatorHeader__languages"
+        className="adminHeader__languages"
         aria-label="Language"
       >
         <button
@@ -53,4 +53,4 @@ const CreatorHeader = () => {
   );
 };
 
-export default CreatorHeader;
+export default AdminHeader;

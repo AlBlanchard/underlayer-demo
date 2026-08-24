@@ -1,4 +1,4 @@
-import { useLanguage } from '../../../i18n/useLanguage';
+import { useLanguage } from '@/i18n/useLanguage';
 import ViewerProgress from './ViewerProgress';
 
 const PreparingContent = () => {
@@ -15,14 +15,14 @@ const PreparingContent = () => {
         />
 
         <h1 className="preparingContent__title">
-          {t.viewer.preparing.title}
+          {t.user.preparing.title}
         </h1>
 
         <p
           className="preparingContent__description"
           role="status"
         >
-          {t.viewer.preparing.description}
+          {t.user.preparing.description}
         </p>
       </div>
     </section>

@@ -6,13 +6,13 @@ import { useParams } from 'react-router';
 import {
   connectViewer,
   encodeContent,
-} from '../../../services/demo.service';
+} from '@/services/demo.service';
 
-import { sendDemoEvent } from '../../../services/demo-sync.service';
+import { sendDemoEvent } from '@/services/demo-sync.service';
 
 import type {
   Viewer,
-} from '../../../types/demo';
+} from '@/types/demo';
 
 import ProtectedContent from '../components/ProtectedContent';
 import ViewerIdentityForm from '../components/ViewerIdentityForm';
@@ -25,7 +25,7 @@ type ViewerStep =
   | 'content'
   | 'instructions';
 
-const ViewerPage = () => {
+const DemoPage = () => {
   const { sessionId } = useParams();
 
   const [viewer, setViewer] =
@@ -85,7 +85,7 @@ const ViewerPage = () => {
   }
 
   return (
-    <main className="viewerPage">
+    <main className="demoPage">
       {step === 'identity' && (
         <ViewerIdentityForm
           onSubmit={handleJoin}
@@ -115,4 +115,4 @@ const ViewerPage = () => {
   );
 };
 
-export default ViewerPage;
+export default DemoPage;
