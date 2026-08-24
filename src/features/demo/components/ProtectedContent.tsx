@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import Button from '../../../components/common/Button';
-import type { Viewer } from '../../../types/demo';
+import Button from '@/components/common/Button';
+import type { Viewer } from '@/types/demo';
 
 import ViewerProgress from './ViewerProgress';
-import { useLanguage } from '../../../i18n/useLanguage';
+import { useLanguage } from '@/i18n/useLanguage';
 
 interface ProtectedContentProps {
   viewer: Viewer;
@@ -30,15 +30,15 @@ const ProtectedContent = ({
 
       <div className="protectedContent__content">
         <span className="protectedContent__eyebrow">
-          {t.viewer.content.eyebrow}
+          {t.user.content.eyebrow}
         </span>
 
         <h1 className="protectedContent__title">
-          {t.viewer.content.title}
+          {t.user.content.title}
         </h1>
 
         <p className="protectedContent__description">
-          {t.viewer.content.description}{' '}
+          {t.user.content.description}{' '}
           <strong>{viewer.username}</strong>.
         </p>
 
@@ -49,11 +49,11 @@ const ProtectedContent = ({
 
           <div>
             <strong>
-              {t.viewer.content.instruction}
+              {t.user.content.instruction}
             </strong>
 
             <p>
-              {t.viewer.content.hint}
+              {t.user.content.hint}
             </p>
           </div>
         </div>
@@ -91,7 +91,7 @@ const ProtectedContent = ({
           disabled={!isImageLoaded}
           onClick={onScreenshotTaken}
         >
-          {t.viewer.content.button}
+          {t.user.content.button}
         </Button>
       </div>
     </section>

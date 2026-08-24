@@ -1,4 +1,4 @@
-import type { DemoStatus } from '../../types/demo';
+import type { DemoStatus } from '@/types/demo';
 
 interface DemoStep {
   label: string;
