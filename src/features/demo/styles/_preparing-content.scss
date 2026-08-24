@@ -1,4 +1,23 @@
+@use '../../../styles/abstracts/breakpoints' as bp;
+
 .preparingContent {
+  display: flex;
+  flex: 1;
+  align-items: center;
+
+  width: 100%;
+  max-width: 480px;
+
+  margin-inline: auto;
+
+  &__content {
+    width: 100%;
+
+    padding-block: var(--space-xl);
+
+    text-align: center;
+  }
+
   &__loader {
     width: 3rem;
     height: 3rem;
@@ -10,12 +29,64 @@
     border-radius: 50%;
 
     animation:
-      viewer-loading-spin 0.8s linear infinite;
+      preparing-spin
+      0.8s
+      linear
+      infinite;
+  }
+
+  &__title {
+    margin-top: var(--space-xl);
+
+    font-size: clamp(
+      2rem,
+      10vw,
+      2.75rem
+    );
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  &__description {
+    max-width: 400px;
+
+    margin:
+      var(--space-lg)
+      auto
+      0;
+
+    color: var(--color-text-muted);
+
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  @include bp.desktop {
+    max-width: 540px;
+
+    &__loader {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+
+    &__title {
+      font-size: 3rem;
+    }
+
+    &__description {
+      font-size: 1rem;
+    }
   }
 }
 
-@keyframes viewer-loading-spin {
+@keyframes preparing-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preparingContent__loader {
+    animation: none;
   }
 }

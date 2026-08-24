@@ -1,18 +1,17 @@
 import DemoPanel from '@/components/common/DemoPanel';
 import { useLanguage } from '@/i18n/useLanguage';
 
-
-
 const AnalysisProgress = () => {
   const { t } = useLanguage();
-  
+
   return (
     <DemoPanel
-      eyebrow={t.admin.analysing.eyebrow}
-      title={t.admin.analysing.title}
+      className="analysisProgress"
+      eyebrow={t.user.analysis.eyebrow}
+      title={t.user.analysis.title}
       description={
         <>
-          {t.admin.analysing.description}
+          {t.user.analysis.description}
         </>
       }
     >
@@ -25,7 +24,7 @@ const AnalysisProgress = () => {
         className="analysisProgress__status"
         role="status"
       >
-        {t.admin.analysing.status}
+        {t.user.analysis.status}
       </p>
     </DemoPanel>
   );
