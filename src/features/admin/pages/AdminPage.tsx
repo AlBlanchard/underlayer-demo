@@ -6,7 +6,6 @@ import {
 import DemoProgress from '@/components/layout/DemoProgress';
 
 import {
-  analyseScreenshot,
   getDemoSession,
 } from '@/services/demo.service';
 
@@ -20,12 +19,9 @@ import type {
   DemoSession,
 } from '@/types/demo';
 
-import AnalysisProgress from '../components/AnalysisProgress';
 import AdminHeader from '../components/AdminHeader';
 import EncodingProgress from '../components/EncodingProgress';
-import IdentificationResult from '../components/IdentificationResult';
 import QrCodePanel from '../components/QrCodePanel';
-import ScreenshotUpload from '../components/ScreenshotUpload';
 import UserConnected from '../components/UserConnected';
 
 const AdminPage = () => {
@@ -134,92 +130,6 @@ const AdminPage = () => {
     return unsubscribe;
   }, [sessionId]);
 
-  const handleAnalyse = async (
-    file: File,
-  ) => {
-    if (!session?.viewer) {
-      return;
-    }
-
-    const viewer =
-      session.viewer;
-
-    setSession(
-      (currentSession) => {
-        if (!currentSession) {
-          return currentSession;
-        }
-
-        return {
-          ...currentSession,
-          status: 'analysing',
-        };
-      },
-    );
-
-    try {
-      const identifiedViewer =
-        await analyseScreenshot(
-          file,
-          viewer,
-        );
-
-      setSession(
-        (currentSession) => {
-          if (!currentSession) {
-            return currentSession;
-          }
-
-          return {
-            ...currentSession,
-            viewer:
-              identifiedViewer,
-            status:
-              'identified',
-          };
-        },
-      );
-    } catch (error) {
-      setSession(
-        (currentSession) => {
-          if (!currentSession) {
-            return currentSession;
-          }
-
-          return {
-            ...currentSession,
-            status:
-              'waiting-for-upload',
-          };
-        },
-      );
-
-      throw error;
-    }
-  };
-
-  const handleRestart =
-    async () => {
-      try {
-        setError(null);
-
-        const newSession =
-          await getDemoSession();
-
-        setSession({
-          ...newSession,
-          viewer: null,
-          protectedImageUrl: null,
-          status:
-            'waiting-for-viewer',
-        });
-      } catch {
-        setError(
-          'Unable to restart the demo session.',
-        );
-      }
-    };
-
   if (error) {
     return (
       <main>
@@ -281,36 +191,14 @@ const AdminPage = () => {
             <EncodingProgress />
           )}
 
-          {session.status ===
-            'waiting-for-upload' &&
-            session.viewer && (
-              <ScreenshotUpload
-                viewer={
-                  session.viewer
-                }
-                onAnalyse={
-                  handleAnalyse
-                }
-              />
-            )}
+        {session.status ===
+          'waiting-for-upload'}
 
-          {session.status ===
-            'analysing' && (
-            <AnalysisProgress />
-          )}
+        {session.status ===
+          'analysing'}
 
-          {session.status ===
-            'identified' &&
-            session.viewer && (
-              <IdentificationResult
-                viewer={
-                  session.viewer
-                }
-                onRestart={
-                  handleRestart
-                }
-              />
-            )}
+        {session.status ===
+          'identified'}
         </div>
       </main>
     </div>

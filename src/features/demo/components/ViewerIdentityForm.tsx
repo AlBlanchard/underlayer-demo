@@ -3,7 +3,6 @@ import {
   useState,
 } from 'react';
 
-import ViewerProgress from './ViewerProgress';
 import { useLanguage } from '@/i18n/useLanguage';
 
 interface ViewerIdentityFormProps {
@@ -50,7 +49,6 @@ const ViewerIdentityForm = ({
 
   return (
     <section className="viewerIdentity">
-      <ViewerProgress currentStep={1} />
 
       <div className="viewerIdentity__content">
         <span className="viewerIdentity__eyebrow">

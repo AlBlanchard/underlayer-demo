@@ -1,13 +1,10 @@
 import { useLanguage } from '@/i18n/useLanguage';
-import ViewerProgress from './ViewerProgress';
 
 const PreparingContent = () => {
   const { t } = useLanguage();
   
   return (
     <section className="preparingContent">
-      <ViewerProgress currentStep={2} />
-
       <div className="preparingContent__content">
         <div
           className="preparingContent__loader"
