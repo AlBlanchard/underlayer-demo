@@ -1,49 +1,56 @@
 import { useLanguage } from '@/i18n/useLanguage';
 
-const AdminHeader = () => {
+const AppHeader = () => {
   const {
     language,
     setLanguage,
   } = useLanguage();
 
-  
   return (
-    <header className="adminHeader">
-      <span className="adminHeader__brand">
+    <header className="appHeader">
+      <span className="appHeader__brand">
         Underlayer
       </span>
 
       <div
-        className="adminHeader__languages"
+        className="appHeader__languageSwitcher"
         aria-label="Language"
       >
         <button
           type="button"
-          className={
+          className={[
+            'appHeader__languageButton',
             language === 'fr'
-              ? 'is-active'
-              : undefined
-          }
-          onClick={() =>
-            setLanguage('fr')
+              ? 'appHeader__languageButton--active'
+              : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          onClick={() => {
+            setLanguage('fr');
+          }}
+          aria-pressed={
+            language === 'fr'
           }
         >
           FR
         </button>
 
-        <span aria-hidden="true">
-          /
-        </span>
-
         <button
           type="button"
-          className={
+          className={[
+            'appHeader__languageButton',
             language === 'en'
-              ? 'is-active'
-              : undefined
-          }
-          onClick={() =>
-            setLanguage('en')
+              ? 'appHeader__languageButton--active'
+              : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          onClick={() => {
+            setLanguage('en');
+          }}
+          aria-pressed={
+            language === 'en'
           }
         >
           EN
@@ -53,4 +60,4 @@ const AdminHeader = () => {
   );
 };
 
-export default AdminHeader;
+export default AppHeader;

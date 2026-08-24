@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
 
+import { useLanguage } from '@/i18n/useLanguage';
+
 import {
   analyseScreenshot,
   connectViewer,
@@ -16,11 +18,17 @@ import type {
 } from '@/types/demo';
 
 import {
+  getDemoProgressIndex,
   PREVIOUS_DEMO_STEP,
-  type DemoStep,
 } from '../types/demo-flow';
 
-import DemoProgress from '../components/DemoProgress';
+import type {
+  DemoStep,
+} from '../types/demo-flow';
+
+import AppHeader from '@/components/layout/AppHeader';
+import DemoProgress from '@/components/common/DemoProgress';
+
 import PreparingContent from '../components/PreparingContent';
 import ProtectedContent from '../components/ProtectedContent';
 import ViewerIdentityForm from '../components/ViewerIdentityForm';
@@ -29,11 +37,16 @@ import AnalysisProgress from '../components/AnalysisProgress';
 import IdentificationResult from '../components/IdentificationResult';
 import ScreenshotUpload from '../components/ScreenshotUpload';
 
+import {
+  uploadScreenshot,
+} from '@/services/demo-upload.service';
+
 type NavigationDirection =
   | 'forward'
   | 'backward';
 
 const DemoPage = () => {
+  const { t } = useLanguage();
   const { sessionId } = useParams();
 
   const [step, setStep] =
@@ -123,39 +136,130 @@ const DemoPage = () => {
 
   const handleAnalyse = async (
     file: File,
-    ) => {
-      if (!viewer) {
-        return;
-      }
+  ) => {
+    if (
+      !viewer ||
+      !sessionId
+    ) {
+      return;
+    }
 
-      goToStep('analysing', 'forward');
+    try {
+      const screenshotUrl =
+        await uploadScreenshot(
+          file,
+        );
 
-      try {
-        const identifiedViewer =
-          await analyseScreenshot(
-            file,
-            viewer,
-          );
+        console.log(
+          screenshotUrl,
+        );
 
-        setViewer(identifiedViewer);
+      await sendDemoEvent({
+        type:
+          'screenshot-uploaded',
+        sessionId,
+        viewer,
+        screenshotUrl,
+      });
 
-        goToStep('result', 'forward');
-      } catch (error) {
-        goToStep('upload', 'forward');
+      goToStep(
+        'analysing',
+        'forward',
+      );
 
-        throw error;
-      }
+      await sendDemoEvent({
+        type:
+          'analysis-started',
+        sessionId,
+        viewer,
+      });
+
+      const identifiedViewer =
+        await analyseScreenshot(
+          file,
+          viewer,
+        );
+
+      await sendDemoEvent({
+        type:
+          'viewer-identified',
+        sessionId,
+        viewer,
+        identifiedViewer,
+      });
+
+      setViewer(
+        identifiedViewer,
+      );
+
+      goToStep(
+        'result',
+        'forward',
+      );
+    } catch (error) {
+      goToStep(
+        'upload',
+        'backward',
+      );
+
+      throw error;
+    }
   };
 
-  const DEMO_STEP_ORDER: DemoStep[] = [
+  const progressSteps = [
+    {
+      id: 'identity',
+      label: t.user.progress.identity,
+      role: 'viewer',
+    },
+    {
+      id: 'content',
+      label: t.user.progress.content,
+      role: 'viewer',
+    },
+    {
+      id: 'creator',
+      label: t.user.progress.creator,
+      role: 'creator',
+    },
+    {
+      id: 'analysis',
+      label: t.user.progress.analysis,
+      role: 'creator',
+    },
+    {
+      id: 'result',
+      label: t.user.progress.result,
+      role: 'creator',
+    },
+  ] as const;
+
+  const progressTargets: readonly DemoStep[] = [
     'identity',
-    'preparing',
     'content',
     'role-transition',
     'upload',
-    'analysing',
     'result',
   ];
+
+  const handleRestart = async () => {
+    if (!sessionId) {
+      return;
+    }
+
+    await sendDemoEvent({
+      type: 'session-restarted',
+      sessionId,
+    });
+
+    setViewer(null);
+    setProtectedImageUrl(null);
+
+    goToStep(
+      'identity',
+      'backward',
+    );
+  };
 
   if (!sessionId) {
     return (
@@ -167,99 +271,113 @@ const DemoPage = () => {
 
   return (
     <main className="demoPage">
-      <DemoProgress
-        currentStep={step}
-        navigationDisabled={navigationDisabled}
-        onNavigate={(targetStep) => {
-          const targetIndex =
-            DEMO_STEP_ORDER.indexOf(targetStep);
+      <AppHeader />
+        <DemoProgress
+          steps={progressSteps}
+          currentIndex={
+            getDemoProgressIndex(step)
+          }
+          navigationDisabled={
+            navigationDisabled
+          }
+          onNavigate={(index) => {
+            const targetStep =
+              progressTargets[index];
 
-          const currentIndex =
-            DEMO_STEP_ORDER.indexOf(step);
+            if (!targetStep) {
+              return;
+            }
 
-          goToStep(
-            targetStep,
-            targetIndex < currentIndex
-              ? 'backward'
-              : 'forward',
-          );
-        }}
-      />
+            const targetIndex =
+              getDemoProgressIndex(
+                targetStep,
+              );
 
-      <div
-        key={step}
-        className={[
-          'demoPage__stage',
-          navigationDirection === 'forward'
-            ? 'demoPage__stage--forward'
-            : 'demoPage__stage--backward',
-        ].join(' ')}
-      >
+            const currentIndex =
+              getDemoProgressIndex(step);
 
-        <div className="demoPage__content">
-          {step === 'identity' && (
-            <ViewerIdentityForm
-              onSubmit={handleJoin}
-            />
-          )}
+            goToStep(
+              targetStep,
+              targetIndex < currentIndex
+                ? 'backward'
+                : 'forward',
+            );
+          }}
+        />
 
-          {step === 'preparing' && (
-            <PreparingContent />
-          )}
+        <div
+          key={step}
+          className={[
+            'demoPage__stage',
+            navigationDirection === 'forward'
+              ? 'demoPage__stage--forward'
+              : 'demoPage__stage--backward',
+          ].join(' ')}
+        >
 
-          {step === 'content' &&
-            viewer &&
-            protectedImageUrl && (
-              <ProtectedContent
-                viewer={viewer}
-                imageUrl={protectedImageUrl}
-                onScreenshotTaken={() => {
-                  goToStep(
-                    'role-transition',
-                    'forward',
-                  );
-                }}
+          <div className="demoPage__content">
+            {step === 'identity' && (
+              <ViewerIdentityForm
+                onSubmit={handleJoin}
               />
             )}
 
-          {step === 'role-transition' && (
-            <RoleTransition
-              onBack={handleBack}
-              onContinue={() => {
-                goToStep('upload', 'forward');
-              }}
-            />
-          )}
+            {step === 'preparing' && (
+              <PreparingContent />
+            )}
 
-          {step === 'upload' &&
-            viewer && (
-              <ScreenshotUpload
-                viewer={viewer}
-                onAnalyse={handleAnalyse}
+            {step === 'content' &&
+              viewer &&
+              protectedImageUrl && (
+                <ProtectedContent
+                  viewer={viewer}
+                  imageUrl={protectedImageUrl}
+                  onScreenshotTaken={() => {
+                    goToStep(
+                      'role-transition',
+                      'forward',
+                    );
+                  }}
+                />
+              )}
+
+            {step === 'role-transition' && (
+              <RoleTransition
                 onBack={handleBack}
-              />
-            )}
-
-          {step === 'analysing' && (
-            <AnalysisProgress />
-          )}
-
-          {step === 'result' &&
-            viewer && (
-              <IdentificationResult
-                viewer={viewer}
-                onRetry={() => {
+                onContinue={() => {
                   goToStep('upload', 'forward');
                 }}
-                onRestart={() => {
-                  setViewer(null);
-                  setProtectedImageUrl(
-                    null,
-                  );
-                  goToStep('identity', 'forward');
-                }}
               />
             )}
+
+            {step === 'upload' &&
+              viewer && (
+                <ScreenshotUpload
+                  viewer={viewer}
+                  onAnalyse={handleAnalyse}
+                  onBack={handleBack}
+                />
+              )}
+
+            {step === 'analysing' && (
+              <AnalysisProgress />
+            )}
+
+            {step === 'result' &&
+              viewer && (
+                <IdentificationResult
+                  viewer={viewer}
+                  onRetry={() => {
+                    goToStep(
+                      'upload',
+                      'backward',
+                    );
+                  }}
+                  onRestart={() => {
+                    void handleRestart();
+                  }}
+                />
+              )}
         </div>
       </div>
     </main>
