@@ -1,0 +1,110 @@
+@use '../../../styles/abstracts/breakpoints' as bp;
+
+.identificationResult {
+  width: 100%;
+  max-width: 480px;
+
+  margin-inline: auto;
+
+  &__icon {
+    display: grid;
+
+    width: 4rem;
+    height: 4rem;
+    margin: var(--space-lg) auto 0;
+
+    color: var(--color-background);
+    background: var(--color-success);
+
+    border-radius: 50%;
+
+    box-shadow:
+      0 0 0 5px var(--color-success-soft),
+      0 12px 32px rgb(85 214 165 / 16%);
+
+    font-size: 1.75rem;
+    font-weight: 800;
+
+    place-items: center;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+
+    margin-top: var(--space-xl);
+
+    .button {
+      order: 1;
+
+      width: 100%;
+      min-height: 44px;
+    }
+  }
+
+  &__restart {
+    order: 2;
+
+    width: 100%;
+    min-height: 44px;
+    padding: 0.875rem 1rem;
+
+    color: var(--color-text-muted);
+    background: transparent;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+
+    cursor: pointer;
+
+    font: inherit;
+    font-weight: 600;
+
+    transition:
+      color var(--transition-fast),
+      background var(--transition-fast),
+      border-color var(--transition-fast);
+
+    &:focus-visible {
+      outline: 2px solid var(--color-success);
+      outline-offset: 3px;
+    }
+  }
+
+  @include bp.desktop {
+    max-width: 520px;
+
+    &__icon {
+      width: 4.5rem;
+      height: 4.5rem;
+      margin-top: var(--space-xl);
+
+      box-shadow:
+        0 0 0 6px var(--color-success-soft),
+        0 14px 36px rgb(85 214 165 / 18%);
+
+      font-size: 2rem;
+    }
+
+    &__actions {
+      .button {
+        order: 1;
+
+        width: auto;
+      }
+    }
+
+    &__restart {
+      order: 2;
+
+      width: auto;
+
+      &:hover {
+        color: var(--color-text);
+        background: var(--color-surface-raised);
+        border-color: var(--color-border-strong);
+      }
+    }
+  }
+}

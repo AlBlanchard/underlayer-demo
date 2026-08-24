@@ -11,7 +11,10 @@ import { useLanguage } from '@/i18n/useLanguage';
 
 interface ScreenshotUploadProps {
   viewer: Viewer;
-  onAnalyse: (file: File) => Promise<void>;
+  onAnalyse: (
+    file: File,
+  ) => Promise<void>;
+  onBack: () => void;
 }
 
 const ACCEPTED_TYPES = [
@@ -23,7 +26,8 @@ const ACCEPTED_TYPES = [
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 const ScreenshotUpload = ({
-  onAnalyse
+  onAnalyse,
+  onBack,
 }: ScreenshotUploadProps) => {
     
     const [file, setFile] = useState<File | null>(null);
@@ -37,14 +41,14 @@ const ScreenshotUpload = ({
     const selectFile = (selectedFile: File) => {
         if (!ACCEPTED_TYPES.includes(selectedFile.type)) {
         setError(
-            t.admin.upload.errorType,
+            t.user.upload.errorType,
         );
         return;
         }
 
         if (selectedFile.size > MAX_FILE_SIZE) {
         setError(
-            t.admin.upload.errorSize,
+            t.user.upload.errorSize,
         );
         return;
         }
@@ -95,7 +99,7 @@ const ScreenshotUpload = ({
         await onAnalyse(file);
         } catch {
         setError(
-            t.admin.upload.error,
+            t.user.upload.error,
         );
 
         setIsAnalysing(false);
@@ -114,11 +118,11 @@ const ScreenshotUpload = ({
 
   return (
       <DemoPanel
-        eyebrow={t.admin.upload.eyebrow}
-        title={t.admin.upload.title}
+        eyebrow={t.user.upload.eyebrow}
+        title={t.user.upload.title}
         description={
           <>
-            {t.admin.upload.description}
+            {t.user.upload.description}
           </>
         }
       >
@@ -145,10 +149,10 @@ const ScreenshotUpload = ({
           />
         ) : (
           <div className="screenshotUpload__placeholder">
-            <strong>{t.admin.upload.drop}</strong>
+            <strong>{t.user.upload.drop}</strong>
 
             <span>
-              {t.admin.upload.select}
+              {t.user.upload.select}
             </span>
 
             <small>
@@ -173,16 +177,26 @@ const ScreenshotUpload = ({
         </p>
       )}
 
-      <button
-        className="screenshotUpload__button"
-        type="button"
-        disabled={!file || isAnalysing}
-        onClick={handleAnalyse}
-      >
-        {isAnalysing
-          ? t.admin.upload.analysing
-          : t.admin.upload.button}
-      </button>
+      <div className="screenshotUpload__buttonContainer" >
+        <button
+          type="button"
+          className="screenshotUpload__back backButton"
+          onClick={onBack}
+        >
+          Retour
+        </button>
+
+        <button
+          className="screenshotUpload__button"
+          type="button"
+          disabled={!file || isAnalysing}
+          onClick={handleAnalyse}
+        >
+          {isAnalysing
+            ? t.user.upload.analysing
+            : t.user.upload.analyse}
+        </button>
+      </div>
     </DemoPanel>
   );
 };
