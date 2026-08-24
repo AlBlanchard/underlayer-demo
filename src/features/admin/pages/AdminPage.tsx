@@ -3,32 +3,32 @@ import {
   useState,
 } from 'react';
 
-import DemoProgress from '../../../components/layout/DemoProgress';
+import DemoProgress from '@/components/layout/DemoProgress';
 
 import {
   analyseScreenshot,
   getDemoSession,
-} from '../../../services/demo.service';
+} from '@/services/demo.service';
 
 import {
   subscribeToConnectionStatus,
   subscribeToDemoEvents,
   type DemoConnectionStatus,
-} from '../../../services/demo-sync.service';
+} from '@/services/demo-sync.service';
 
 import type {
   DemoSession,
-} from '../../../types/demo';
+} from '@/types/demo';
 
 import AnalysisProgress from '../components/AnalysisProgress';
-import CreatorHeader from '../components/CreatorHeader';
+import AdminHeader from '../components/AdminHeader';
 import EncodingProgress from '../components/EncodingProgress';
 import IdentificationResult from '../components/IdentificationResult';
 import QrCodePanel from '../components/QrCodePanel';
 import ScreenshotUpload from '../components/ScreenshotUpload';
-import ViewerConnected from '../components/ViewerConnected';
+import UserConnected from '../components/UserConnected';
 
-const CreatorPage = () => {
+const AdminPage = () => {
   const [session, setSession] =
     useState<DemoSession | null>(null);
 
@@ -237,13 +237,13 @@ const CreatorPage = () => {
   }
 
   return (
-    <div className="creatorPage">
-      <CreatorHeader />
+    <div className="adminPage">
+      <AdminHeader />
 
       {connectionStatus !==
         'connected' && (
         <div
-          className="creatorPage__connectionStatus"
+          className="adminPage__connectionStatus"
           role="status"
         >
           {connectionStatus ===
@@ -253,12 +253,12 @@ const CreatorPage = () => {
         </div>
       )}
 
-      <main className="creatorPage__main">
+      <main className="adminPage__main">
         <DemoProgress
           status={session.status}
         />
 
-        <div className="creatorPage__content">
+        <div className="adminPage__content">
           {session.status ===
             'waiting-for-viewer' && (
             <QrCodePanel
@@ -269,7 +269,7 @@ const CreatorPage = () => {
           {session.status ===
             'viewer-connected' &&
             session.viewer && (
-              <ViewerConnected
+              <UserConnected
                 viewer={
                   session.viewer
                 }
@@ -317,4 +317,4 @@ const CreatorPage = () => {
   );
 };
 
-export default CreatorPage;
+export default AdminPage;

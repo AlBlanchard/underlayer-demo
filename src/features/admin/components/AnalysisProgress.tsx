@@ -1,5 +1,5 @@
-import DemoPanel from '../../../components/common/DemoPanel';
-import { useLanguage } from '../../../i18n/useLanguage';
+import DemoPanel from '@/components/common/DemoPanel';
+import { useLanguage } from '@/i18n/useLanguage';
 
 
 
@@ -8,11 +8,11 @@ const AnalysisProgress = () => {
   
   return (
     <DemoPanel
-      eyebrow={t.creator.analysing.eyebrow}
-      title={t.creator.analysing.title}
+      eyebrow={t.admin.analysing.eyebrow}
+      title={t.admin.analysing.title}
       description={
         <>
-          {t.creator.analysing.description}
+          {t.admin.analysing.description}
         </>
       }
     >
@@ -25,7 +25,7 @@ const AnalysisProgress = () => {
         className="analysisProgress__status"
         role="status"
       >
-        {t.creator.analysing.status}
+        {t.admin.analysing.status}
       </p>
     </DemoPanel>
   );

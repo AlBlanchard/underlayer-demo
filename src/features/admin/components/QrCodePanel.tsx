@@ -1,8 +1,8 @@
 import { QRCodeSVG } from 'qrcode.react';
 
-import DemoPanel from '../../../components/common/DemoPanel';
-import { getViewerDemoUrl } from '../../../services/demo-url.service';
-import { useLanguage } from '../../../i18n/useLanguage';
+import DemoPanel from '@/components/common/DemoPanel';
+import { getViewerDemoUrl } from '@/services/demo-url.service';
+import { useLanguage } from '@/i18n/useLanguage';
 
 interface QrCodePanelProps {
   sessionId: string;
@@ -21,11 +21,11 @@ const QrCodePanel = ({
   return (
     <DemoPanel
       className="qrPanel"
-      eyebrow={t.creator.qr.eyebrow}
-      title={t.creator.qr.title}
+      eyebrow={t.admin.qr.eyebrow}
+      title={t.admin.qr.title}
       description={
         <>
-          {t.creator.qr.description}
+          {t.admin.qr.description}
         </>
       }
     >
@@ -45,7 +45,7 @@ const QrCodePanel = ({
           aria-hidden="true"
         />
 
-        <span>{t.creator.qr.waiting}</span>
+        <span>{t.admin.qr.waiting}</span>
       </div>
 
       <small className="qrPanel__session">

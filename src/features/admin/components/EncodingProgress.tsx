@@ -1,16 +1,16 @@
-import DemoPanel from '../../../components/common/DemoPanel';
-import { useLanguage } from '../../../i18n/useLanguage';
+import DemoPanel from '@/components/common/DemoPanel';
+import { useLanguage } from '@/i18n/useLanguage';
 
 const EncodingProgress = () => {
   const { t } = useLanguage();
   
   return (
     <DemoPanel
-      eyebrow={t.creator.encoding.eyebrow}
-      title={t.creator.encoding.title}
+      eyebrow={t.admin.encoding.eyebrow}
+      title={t.admin.encoding.title}
       description={
         <>
-          {t.creator.encoding.description}
+          {t.admin.encoding.description}
         </>
       }
     >
@@ -23,7 +23,7 @@ const EncodingProgress = () => {
         className="encodingProgress__status"
         role="status"
       >
-        {t.creator.encoding.status}
+        {t.admin.encoding.status}
       </p>
     </DemoPanel>
   );

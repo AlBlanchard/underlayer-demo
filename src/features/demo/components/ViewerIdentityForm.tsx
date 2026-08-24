@@ -4,7 +4,7 @@ import {
 } from 'react';
 
 import ViewerProgress from './ViewerProgress';
-import { useLanguage } from '../../../i18n/useLanguage';
+import { useLanguage } from '@/i18n/useLanguage';
 
 interface ViewerIdentityFormProps {
   onSubmit: (username: string) => Promise<void>;
@@ -54,15 +54,15 @@ const ViewerIdentityForm = ({
 
       <div className="viewerIdentity__content">
         <span className="viewerIdentity__eyebrow">
-          {t.viewer.identity.eyebrow}
+          {t.user.identity.eyebrow}
         </span>
 
         <h1 className="viewerIdentity__title">
-          {t.viewer.identity.title}
+          {t.user.identity.title}
         </h1>
 
         <p className="viewerIdentity__description">
-          {t.viewer.identity.description}
+          {t.user.identity.description}
         </p>
 
         <form
@@ -73,7 +73,7 @@ const ViewerIdentityForm = ({
             className="viewerIdentity__label"
             htmlFor="viewer-username"
           >
-            {t.viewer.identity.placeholder}
+            {t.user.identity.placeholder}
           </label>
 
           <input
@@ -84,7 +84,7 @@ const ViewerIdentityForm = ({
             onChange={(event) =>
               setUsername(event.target.value)
             }
-            placeholder={t.viewer.identity.placeholder}
+            placeholder={t.user.identity.placeholder}
             autoComplete="off"
             maxLength={32}
             required
@@ -96,8 +96,8 @@ const ViewerIdentityForm = ({
             disabled={!trimmedUsername || isSubmitting}
           >
             {isSubmitting
-              ? t.viewer.identity.joining
-              : t.viewer.identity.button}
+              ? t.user.identity.joining
+              : t.user.identity.button}
           </button>
 
           {error && (

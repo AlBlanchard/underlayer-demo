@@ -6,17 +6,17 @@
 @use './components/button';
 @use './components/demo-progress';
 
-@use '../features/creator/styles/creator-page';
-@use '../features/creator/styles/qr-code-panel';
-@use '../features/creator/styles/viewer-connected';
-@use '../features/creator/styles/screenshot-upload';
-@use '../features/creator/styles/analysis-progress';
-@use '../features/creator/styles/identification-result';
-@use '../features/creator/styles/encoding-progress';
+@use '@/features/admin/styles/admin-page';
+@use '@/features/admin/styles/qr-code-panel';
+@use '@/features/admin/styles/user-connected';
+@use '@/features/admin/styles/screenshot-upload';
+@use '@/features/admin/styles/analysis-progress';
+@use '@/features/admin/styles/identification-result';
+@use '@/features/admin/styles/encoding-progress';
 
-@use '../features/viewer/styles/viewer-page';
-@use '../features/viewer/styles/viewer-identity';
-@use '../features/viewer/styles/protected-content';
-@use '../features/viewer/styles/viewer-progress';
-@use '../features/viewer/styles/screenshot-instructions';
-@use '../features/viewer/styles/preparing-content';
+@use '@/features/demo/styles/demo-page';
+@use '@/features/demo/styles/viewer-identity';
+@use '@/features/demo/styles/protected-content';
+@use '@/features/demo/styles/viewer-progress';
+@use '@/features/demo/styles/screenshot-instructions';
+@use '@/features/demo/styles/preparing-content';

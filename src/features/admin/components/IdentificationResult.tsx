@@ -1,10 +1,10 @@
-import Button from '../../../components/common/Button';
-import DemoPanel from '../../../components/common/DemoPanel';
-import { useLanguage } from '../../../i18n/useLanguage';
+import Button from '@/components/common/Button';
+import DemoPanel from '@/components/common/DemoPanel';
+import { useLanguage } from '@/i18n/useLanguage';
 
 import type {
   Viewer,
-} from '../../../types/demo';
+} from '@/types/demo';
 
 interface IdentificationResultProps {
   viewer: Viewer;
@@ -20,11 +20,11 @@ const IdentificationResult = ({
   return (
     <DemoPanel
       className="identificationResult"
-      eyebrow={t.creator.result.eyebrow}
+      eyebrow={t.admin.result.eyebrow}
       title={viewer.username}
       description={
         <>
-          {t.creator.result.description}
+          {t.admin.result.description}
         </>
       }
     >
@@ -39,7 +39,7 @@ const IdentificationResult = ({
         type="button"
         onClick={onRestart}
       >
-        {t.creator.result.restart}
+        {t.admin.result.restart}
       </Button>
     </DemoPanel>
   );

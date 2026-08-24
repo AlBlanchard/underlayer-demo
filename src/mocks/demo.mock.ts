@@ -1,4 +1,4 @@
-import type { DemoSession } from '../types/demo';
+import type { DemoSession } from '@/types/demo';
 
 export const demoSessionMock: DemoSession = {
   id: 'demo-123',

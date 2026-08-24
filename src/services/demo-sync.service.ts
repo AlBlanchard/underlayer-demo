@@ -1,4 +1,4 @@
-import type { Viewer } from '../types/demo';
+import type { Viewer } from '@/types/demo';
 
 export type DemoSyncEvent =
   | {
