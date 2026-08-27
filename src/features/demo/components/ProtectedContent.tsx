@@ -102,6 +102,13 @@ const ProtectedContent = ({
             onLoad={() => {
               setIsImageLoaded(true);
             }}
+
+            onError={() => {
+              console.error(
+                'Unable to load protected image:',
+                imageUrl,
+              );
+            }}
           />
 
           {isImageLoaded && (

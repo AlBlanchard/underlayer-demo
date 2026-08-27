@@ -1,205 +1,72 @@
-import {
-  useEffect,
-  useState,
-} from 'react';
-
-import DemoProgress from '@/components/layout/DemoProgress';
+import AppHeader from '@/components/layout/AppHeader';
+import SessionCard from '../components/SessionCard';
 
 import {
-  getDemoSession,
-} from '@/services/demo.service';
-
-import {
-  subscribeToConnectionStatus,
-  subscribeToDemoEvents,
-  type DemoConnectionStatus,
-} from '@/services/demo-sync.service';
-
-import type {
-  DemoSession,
-} from '@/types/demo';
-
-import AdminHeader from '../components/AdminHeader';
-import EncodingProgress from '../components/EncodingProgress';
-import QrCodePanel from '../components/QrCodePanel';
-import UserConnected from '../components/UserConnected';
+  useAdminSessions,
+} from '../hooks/useAdminSessions';
 
 const AdminPage = () => {
-  const [session, setSession] =
-    useState<DemoSession | null>(null);
-
-  const [error, setError] =
-    useState<string | null>(null);
-
-  const [
-    connectionStatus,
-    setConnectionStatus,
-  ] = useState<DemoConnectionStatus>(
-    'connecting',
-  );
-
-  const sessionId = session?.id;
-
-  useEffect(() => {
-    let ignore = false;
-
-    const initializeSession =
-      async () => {
-        try {
-          const currentSession =
-            await getDemoSession();
-
-          if (!ignore) {
-            setSession(currentSession);
-          }
-        } catch {
-          if (!ignore) {
-            setError(
-              'Unable to initialize the demo session.',
-            );
-          }
-        }
-      };
-
-    void initializeSession();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!sessionId) {
-      return;
-    }
-
-    return subscribeToConnectionStatus(
-      sessionId,
-      setConnectionStatus,
-    );
-  }, [sessionId]);
-
-  useEffect(() => {
-    if (!sessionId) {
-      return;
-    }
-
-    const unsubscribe =
-      subscribeToDemoEvents(
-        sessionId,
-        (event) => {
-          setSession(
-            (currentSession) => {
-              if (!currentSession) {
-                return currentSession;
-              }
-
-              switch (event.type) {
-                case 'viewer-connected':
-                  return {
-                    ...currentSession,
-                    viewer:
-                      event.viewer,
-                    status:
-                      'viewer-connected',
-                  };
-
-                case 'encoding-started':
-                  return {
-                    ...currentSession,
-                    viewer:
-                      event.viewer,
-                    status:
-                      'encoding',
-                  };
-
-                case 'content-ready':
-                  return {
-                    ...currentSession,
-                    viewer:
-                      event.viewer,
-                    status:
-                      'waiting-for-upload',
-                  };
-              }
-            },
-          );
-        },
-      );
-
-    return unsubscribe;
-  }, [sessionId]);
-
-  if (error) {
-    return (
-      <main>
-        <p>{error}</p>
-      </main>
-    );
-  }
-
-  if (!session) {
-    return (
-      <main>
-        <p>Loading demo...</p>
-      </main>
-    );
-  }
+  const {
+    sessions,
+  } = useAdminSessions();
 
   return (
     <div className="adminPage">
-      <AdminHeader />
-
-      {connectionStatus !==
-        'connected' && (
-        <div
-          className="adminPage__connectionStatus"
-          role="status"
-        >
-          {connectionStatus ===
-          'connecting'
-            ? 'Connecting to demo session...'
-            : 'Connection lost. Reconnecting...'}
-        </div>
-      )}
+      <AppHeader />
 
       <main className="adminPage__main">
-        <DemoProgress
-          status={session.status}
-        />
+        <section className="adminPage__intro">
+          <span className="adminPage__eyebrow">
+            Administration
+          </span>
 
-        <div className="adminPage__content">
-          {session.status ===
-            'waiting-for-viewer' && (
-            <QrCodePanel
-              sessionId={session.id}
-            />
+          <h1 className="adminPage__title">
+            Supervision des démonstrations
+          </h1>
+
+          <p className="adminPage__description">
+            Suivez les sessions actives et
+            consultez leur progression.
+          </p>
+        </section>
+
+        <section className="adminPage__sessions">
+          <div className="adminPage__sessionsHeader">
+            <h2>
+              Sessions
+            </h2>
+
+            <span>
+              {sessions.length}{' '}
+              actives
+            </span>
+          </div>
+
+          {sessions.length === 0 ? (
+            <div className="adminPage__empty">
+              <strong>
+                Aucune session active
+              </strong>
+
+              <p>
+                Les démonstrations apparaîtront ici
+                automatiquement lorsqu’un utilisateur
+                se connectera.
+              </p>
+            </div>
+          ) : (
+            <div className="adminPage__grid">
+              {sessions.map(
+                (session) => (
+                  <SessionCard
+                    key={session.id}
+                    session={session}
+                  />
+                ),
+              )}
+            </div>
           )}
-
-          {session.status ===
-            'viewer-connected' &&
-            session.viewer && (
-              <UserConnected
-                viewer={
-                  session.viewer
-                }
-              />
-            )}
-
-          {session.status ===
-            'encoding' && (
-            <EncodingProgress />
-          )}
-
-        {session.status ===
-          'waiting-for-upload'}
-
-        {session.status ===
-          'analysing'}
-
-        {session.status ===
-          'identified'}
-        </div>
+        </section>
       </main>
     </div>
   );

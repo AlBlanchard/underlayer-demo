@@ -1,46 +1,71 @@
-import { demoSessionMock } from '@/mocks/demo.mock';
 import type {
   DemoSession,
   Viewer,
 } from '@/types/demo';
 
-const delay = (duration: number) =>
-  new Promise((resolve) => setTimeout(resolve, duration));
+import {
+  demoSessionMock,
+} from '@/mocks/demo.mock';
 
-export const getDemoSession = async (): Promise<DemoSession> => {
-  await delay(300);
+const delay = (
+  duration: number,
+) =>
+  new Promise((resolve) =>
+    setTimeout(resolve, duration),
+  );
 
-  return structuredClone(demoSessionMock);
-};
+export const getDemoSession =
+  async (): Promise<DemoSession> => {
+    await delay(300);
 
-export const connectViewer = async (
-  username: string,
-): Promise<Viewer> => {
-  await delay(500);
+    const now =
+      new Date().toISOString();
 
-  return {
-    id: crypto.randomUUID(),
-    username,
+    return {
+      ...structuredClone(
+        demoSessionMock,
+      ),
+      id: crypto.randomUUID(),
+      createdAt: now,
+      updatedAt: now,
+    };
   };
-};
 
-export const encodeContent = async (
-  viewer: Viewer,
-): Promise<string> => {
-  await delay(1000);
+export const connectViewer =
+  async (
+    username: string,
+  ): Promise<Viewer> => {
+    await delay(500);
 
-  console.info(`Encoding content for ${viewer.username}`);
+    return {
+      id: crypto.randomUUID(),
+      username,
+    };
+  };
 
-  return '/demo/protected-image.png';
-};
+export const encodeContent =
+  async (
+    viewer: Viewer,
+  ): Promise<string> => {
+    await delay(1000);
 
-export const analyseScreenshot = async (
-  file: File,
-  viewer: Viewer,
-): Promise<Viewer> => {
-  await delay(1500);
+    console.info(
+      `Encoding content for ${viewer.username}`,
+    );
 
-  console.info(`Analysing ${file.name}`);
+    return '/demo/protected-image.png';
+  };
 
-  return viewer;
-};
+export const analyseScreenshot =
+  async (
+    file: File,
+    viewer: Viewer,
+  ): Promise<Viewer> => {
+    await delay(1500);
+
+    console.info(
+      `Analysing ${file.name}`,
+    );
+
+    return viewer;
+  };
