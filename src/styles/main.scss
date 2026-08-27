@@ -4,13 +4,16 @@
 
 @use './components/demo-panel';
 @use './components/button';
+@use './components/app-header';
+@use './components/demo-progress';
 
-@use '@/features/admin/styles/admin-page';
 @use '@/features/admin/styles/qr-code-panel';
 @use '@/features/admin/styles/user-connected';
 
 // ADMIN
 @use '@/features/admin/styles/encoding-progress';
+@use '@/features/admin/styles/admin-page';
+@use '@/features/admin/styles/session-card';
 
 // DEMO
 @use '@/features/demo/styles/analysis-progress';
@@ -22,4 +25,3 @@
 @use '@/features/demo/styles/screenshot-upload';
 @use '@/features/demo/styles/viewer-identity';
 @use '@/features/demo/styles/role-transition';
-@use '@/features/demo/styles/demo-progress';

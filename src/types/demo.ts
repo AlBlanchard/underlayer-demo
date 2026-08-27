@@ -13,10 +13,23 @@ export interface Viewer {
   username: string;
 }
 
+export interface IdentifiedViewer {
+  id: string;
+  username: string;
+}
+
 export interface DemoSession {
   id: string;
   status: DemoStatus;
+
   viewer: Viewer | null;
+
   protectedImageUrl: string | null;
+
+  uploadedImageUrl: string | null;
+
+  identifiedViewer: IdentifiedViewer | null;
+
   createdAt: string;
+  updatedAt: string;
 }

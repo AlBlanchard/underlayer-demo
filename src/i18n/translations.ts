@@ -6,10 +6,11 @@ export const translations = {
 
     admin: {
       progress: {
-        connect: "Connexion",
-        deliver: "Protection",
-        analyse: "Analyse",
-        identify: "Identification",
+        identity: 'Identité',
+        content: 'Contenu',
+        creator: 'Créateur',
+        analysis: 'Analyse',
+        result: 'Résultat',
       },
 
       qr: {
@@ -172,10 +173,11 @@ export const translations = {
 
     admin: {
       progress: {
-        connect: "Connect",
-        deliver: "Protect",
-        analyse: "Analyse",
-        identify: "Identify",
+        identity: 'Identity',
+        content: 'Content',
+        creator: 'Creator',
+        analysis: 'Analysis',
+        result: 'Result',
       },
 
       qr: {
