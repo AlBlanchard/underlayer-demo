@@ -8,11 +8,7 @@ interface QrCodePanelProps {
   sessionId: string;
 }
 
-
-
-const QrCodePanel = ({
-  sessionId,
-}: QrCodePanelProps) => {
+const QrCodePanel = ({ sessionId }: QrCodePanelProps) => {
   const { language } = useLanguage();
   const viewerUrl = getViewerDemoUrl(sessionId, language);
 
@@ -23,34 +19,19 @@ const QrCodePanel = ({
       className="qrPanel"
       eyebrow={t.admin.qr.eyebrow}
       title={t.admin.qr.title}
-      description={
-        <>
-          {t.admin.qr.description}
-        </>
-      }
+      description={<>{t.admin.qr.description}</>}
     >
       <div className="qrPanel__code">
-        <QRCodeSVG
-          value={viewerUrl}
-          size={220}
-          level="M"
-          marginSize={2}
-          title="Join Underlayer demo"
-        />
+        <QRCodeSVG value={viewerUrl} size={220} level="M" marginSize={2} title="Join Underlayer demo" />
       </div>
 
       <div className="qrPanel__status">
-        <span
-          className="qrPanel__statusDot"
-          aria-hidden="true"
-        />
+        <span className="qrPanel__statusDot" aria-hidden="true" />
 
         <span>{t.admin.qr.waiting}</span>
       </div>
 
-      <small className="qrPanel__session">
-        Session: {sessionId}
-      </small>
+      <small className="qrPanel__session">Session: {sessionId}</small>
     </DemoPanel>
   );
 };

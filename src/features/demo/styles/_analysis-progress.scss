@@ -16,11 +16,7 @@
     border-top-color: var(--color-primary);
     border-radius: 50%;
 
-    animation:
-      analysis-spin
-      0.8s
-      linear
-      infinite;
+    animation: analysis-spin 0.8s linear infinite;
   }
 
   &__status {

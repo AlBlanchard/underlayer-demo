@@ -21,44 +21,25 @@ const DemoProgress = ({
 }: DemoProgressProps) => {
   return (
     <nav
-      className={[
-        'demoProgress',
-        compact
-          ? 'demoProgress--compact'
-          : '',
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      className={['demoProgress', compact ? 'demoProgress--compact' : ''].filter(Boolean).join(' ')}
       aria-label="Demo progress"
     >
       <ol className="demoProgress__list">
         {steps.map((step, index) => {
-          const isCurrent =
-            index === currentIndex;
+          const isCurrent = index === currentIndex;
 
-          const isCompleted =
-            index < currentIndex;
+          const isCompleted = index < currentIndex;
 
-          const canNavigate =
-            Boolean(onNavigate) &&
-            isCompleted &&
-            index !== 0 &&
-            !navigationDisabled;
+          const canNavigate = Boolean(onNavigate) && isCompleted && index !== 0 && !navigationDisabled;
 
           return (
             <li
               key={step.id}
               className={[
                 'demoProgress__item',
-                step.role
-                  ? `demoProgress__item--${step.role}`
-                  : '',
-                isCurrent
-                  ? 'demoProgress__item--current'
-                  : '',
-                isCompleted
-                  ? 'demoProgress__item--completed'
-                  : '',
+                step.role ? `demoProgress__item--${step.role}` : '',
+                isCurrent ? 'demoProgress__item--current' : '',
+                isCompleted ? 'demoProgress__item--completed' : '',
               ]
                 .filter(Boolean)
                 .join(' ')}
@@ -67,26 +48,16 @@ const DemoProgress = ({
                 type="button"
                 className="demoProgress__step"
                 disabled={!canNavigate}
-                aria-current={
-                  isCurrent
-                    ? 'step'
-                    : undefined
-                }
+                aria-current={isCurrent ? 'step' : undefined}
                 onClick={() => {
                   if (canNavigate) {
                     onNavigate?.(index);
                   }
                 }}
               >
-                <span className="demoProgress__marker">
-                  {isCompleted
-                    ? '✓'
-                    : index + 1}
-                </span>
+                <span className="demoProgress__marker">{isCompleted ? '✓' : index + 1}</span>
 
-                <span className="demoProgress__label">
-                  {step.label}
-                </span>
+                <span className="demoProgress__label">{step.label}</span>
               </button>
             </li>
           );

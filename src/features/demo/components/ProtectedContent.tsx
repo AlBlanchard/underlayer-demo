@@ -13,49 +13,31 @@ interface ProtectedContentProps {
   onScreenshotTaken: () => void;
 }
 
-const ProtectedContent = ({
-  viewer,
-  imageUrl,
-  onScreenshotTaken,
-}: ProtectedContentProps) => {
-  const [isImageLoaded, setIsImageLoaded] =
-    useState(false);
+const ProtectedContent = ({ viewer, imageUrl, onScreenshotTaken }: ProtectedContentProps) => {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-  const [isFullscreen, setIsFullscreen] =
-    useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const { t, language } = useLanguage();
 
   return (
     <section className="protectedContent">
-
       <div className="protectedContent__content">
-        <span className="protectedContent__eyebrow">
-          {t.user.content.eyebrow}
-        </span>
+        <span className="protectedContent__eyebrow">{t.user.content.eyebrow}</span>
 
-        <h1 className="protectedContent__title">
-          {t.user.content.title}
-        </h1>
+        <h1 className="protectedContent__title">{t.user.content.title}</h1>
 
         <p className="protectedContent__description">
-          {t.user.content.description}{' '}
-          <strong>{viewer.username}</strong>.
+          {t.user.content.description} <strong>{viewer.username}</strong>.
         </p>
 
         <div className="protectedContent__instruction">
-          <span className="protectedContent__instructionNumber">
-            1
-          </span>
+          <span className="protectedContent__instructionNumber">1</span>
 
           <div>
-            <strong>
-              {t.user.content.instruction}
-            </strong>
+            <strong>{t.user.content.instruction}</strong>
 
-            <p>
-              {t.user.content.hint}
-            </p>
+            <p>{t.user.content.hint}</p>
           </div>
         </div>
 
@@ -68,33 +50,20 @@ const ProtectedContent = ({
             }
           }}
           disabled={!isImageLoaded}
-          aria-label={
-            language === 'fr'
-              ? 'Ouvrir l’image en plein écran'
-              : 'Open image fullscreen'
-          }
+          aria-label={language === 'fr' ? 'Ouvrir l’image en plein écran' : 'Open image fullscreen'}
         >
           {!isImageLoaded && (
             <div
               className="protectedContent__imageLoader"
               role="status"
-              aria-label={
-                language === 'fr'
-                  ? 'Chargement du contenu protégé'
-                  : 'Loading protected content'
-              }
+              aria-label={language === 'fr' ? 'Chargement du contenu protégé' : 'Loading protected content'}
             >
               <span aria-hidden="true" />
             </div>
           )}
 
           <img
-            className={[
-              'protectedContent__image',
-              isImageLoaded
-                ? 'protectedContent__image--loaded'
-                : '',
-            ]
+            className={['protectedContent__image', isImageLoaded ? 'protectedContent__image--loaded' : '']
               .filter(Boolean)
               .join(' ')}
             src={imageUrl}
@@ -104,28 +73,18 @@ const ProtectedContent = ({
             }}
 
             onError={() => {
-              console.error(
-                'Unable to load protected image:',
-                imageUrl,
-              );
+              console.error('Unable to load protected image:', imageUrl);
             }}
           />
 
           {isImageLoaded && (
-            <span
-              className="protectedContent__fullscreenHint"
-              aria-hidden="true"
-            >
+            <span className="protectedContent__fullscreenHint" aria-hidden="true">
               ⛶
             </span>
           )}
         </button>
 
-        <Button
-          type="button"
-          disabled={!isImageLoaded}
-          onClick={onScreenshotTaken}
-        >
+        <Button type="button" disabled={!isImageLoaded} onClick={onScreenshotTaken}>
           {t.user.content.button}
         </Button>
       </div>

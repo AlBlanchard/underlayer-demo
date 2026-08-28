@@ -9,21 +9,11 @@ const AnalysisProgress = () => {
       className="analysisProgress"
       eyebrow={t.user.analysis.eyebrow}
       title={t.user.analysis.title}
-      description={
-        <>
-          {t.user.analysis.description}
-        </>
-      }
+      description={<>{t.user.analysis.description}</>}
     >
-      <div
-        className="analysisProgress__loader"
-        aria-hidden="true"
-      />
+      <div className="analysisProgress__loader" aria-hidden="true" />
 
-      <p
-        className="analysisProgress__status"
-        role="status"
-      >
+      <p className="analysisProgress__status" role="status">
         {t.user.analysis.status}
       </p>
     </DemoPanel>

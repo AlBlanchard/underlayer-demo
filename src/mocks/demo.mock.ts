@@ -1,6 +1,4 @@
-import type {
-  DemoSession,
-} from '@/types/demo';
+import type { DemoSession } from '@/types/demo';
 
 const now = new Date().toISOString();
 

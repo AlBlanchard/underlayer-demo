@@ -7,30 +7,14 @@ interface DemoPanelProps extends PropsWithChildren {
   className?: string;
 }
 
-const DemoPanel = ({
-  eyebrow,
-  title,
-  description,
-  className = '',
-  children,
-}: DemoPanelProps) => {
+const DemoPanel = ({ eyebrow, title, description, className = '', children }: DemoPanelProps) => {
   return (
     <section className={`demoPanel ${className}`}>
-      {eyebrow && (
-        <span className="demoPanel__eyebrow">
-          {eyebrow}
-        </span>
-      )}
+      {eyebrow && <span className="demoPanel__eyebrow">{eyebrow}</span>}
 
-      <h1 className="demoPanel__title">
-        {title}
-      </h1>
+      <h1 className="demoPanel__title">{title}</h1>
 
-      {description && (
-        <div className="demoPanel__description">
-          {description}
-        </div>
-      )}
+      {description && <div className="demoPanel__description">{description}</div>}
 
       {children}
     </section>

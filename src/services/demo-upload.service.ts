@@ -2,71 +2,40 @@ interface UploadResponse {
   imageUrl: string;
 }
 
-const MAX_FILE_SIZE =
-  10 * 1024 * 1024;
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-const ALLOWED_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-];
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-export const uploadScreenshot =
-  async (
-    file: File,
-  ): Promise<string> => {
-    if (
-      !ALLOWED_TYPES.includes(
-        file.type,
-      )
-    ) {
-      throw new Error(
-        'Unsupported image type.',
-      );
-    }
+export const uploadScreenshot = async (file: File): Promise<string> => {
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    throw new Error('Unsupported image type.');
+  }
 
-    if (
-      file.size >
-      MAX_FILE_SIZE
-    ) {
-      throw new Error(
-        'Image exceeds maximum size.',
-      );
-    }
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error('Image exceeds maximum size.');
+  }
 
-    const apiUrl =
-      import.meta.env
-        .VITE_DEMO_API_URL;
+  const apiUrl = import.meta.env.VITE_DEMO_API_URL;
 
-    if (!apiUrl) {
-      throw new Error(
-        'VITE_DEMO_API_URL is not configured.',
-      );
-    }
+  if (!apiUrl) {
+    throw new Error('VITE_DEMO_API_URL is not configured.');
+  }
 
-    const response =
-      await fetch(
-        `${apiUrl}/uploads`,
-        {
-          method: 'POST',
+  const response = await fetch(`${apiUrl}/uploads`, {
+    method: 'POST',
 
-          headers: {
-            'Content-Type':
-              file.type,
-          },
+    headers: {
+      'Content-Type': file.type,
+    },
 
-          body: file,
-        },
-      );
+    body: file,
+  });
 
-    if (!response.ok) {
-      throw new Error(
-        'Unable to upload screenshot.',
-      );
-    }
+  if (!response.ok) {
+    throw new Error('Unable to upload screenshot.');
+  }
 
-    const data =
-      await response.json() as UploadResponse;
+  const data = (await response.json()) as UploadResponse;
 
-    return data.imageUrl;
-  };
+  return data.imageUrl;
+};
