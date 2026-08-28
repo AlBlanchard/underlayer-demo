@@ -53,6 +53,12 @@ const updateDemoSession = (event) => {
 
   const existingSession = demoSessions.get(event.sessionId);
 
+  // Toutes les sessions sont créées via POST /sessions.
+  // Un événement provenant d'une session supprimée ou inconnue est donc ignoré.
+  if (!existingSession) {
+    return;
+  }
+
   switch (event.type) {
     case 'viewer-connected': {
       const session = existingSession ?? {
