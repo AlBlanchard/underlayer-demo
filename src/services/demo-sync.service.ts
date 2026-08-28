@@ -2,79 +2,62 @@ import type { Viewer } from '@/types/demo';
 
 export type DemoSyncEvent =
   | {
-      type:
-        'viewer-connected';
+      type: 'viewer-connected';
       sessionId: string;
       viewer: Viewer;
     }
   | {
-      type:
-        'encoding-started';
+      type: 'encoding-started';
       sessionId: string;
       viewer: Viewer;
     }
   | {
-      type:
-        'content-ready';
+      type: 'content-ready';
       sessionId: string;
       viewer: Viewer;
     }
   | {
-    type: 'creator-phase-entered';
-    sessionId: string;
-    viewer: Viewer;
-  }
+      type: 'creator-phase-entered';
+      sessionId: string;
+      viewer: Viewer;
+    }
   | {
-      type:
-        'screenshot-uploaded';
+      type: 'screenshot-uploaded';
       sessionId: string;
       viewer: Viewer;
       screenshotUrl: string;
     }
   | {
-      type:
-        'analysis-started';
+      type: 'analysis-started';
       sessionId: string;
       viewer: Viewer;
     }
   | {
-      type:
-        'viewer-identified';
+      type: 'viewer-identified';
       sessionId: string;
       viewer: Viewer;
       identifiedViewer: Viewer;
     }
   | {
-    type: 'session-restarted';
-    sessionId: string;
-  }
+      type: 'session-restarted';
+      sessionId: string;
+    }
   | {
-    type: 'session-closed';
-    sessionId: string;
-  };
+      type: 'session-closed';
+      sessionId: string;
+    };
 
-export type DemoConnectionStatus =
-  | 'connecting'
-  | 'connected'
-  | 'disconnected';
+export type DemoConnectionStatus = 'connecting' | 'connected' | 'disconnected';
 
-type DemoSyncListener = (
-  event: DemoSyncEvent,
-) => void;
+type DemoSyncListener = (event: DemoSyncEvent) => void;
 
-type ConnectionListener = (
-  status: DemoConnectionStatus,
-) => void;
+type ConnectionListener = (status: DemoConnectionStatus) => void;
 
-type AdminSyncListener = (
-  event: DemoSyncEvent,
-) => void;
+type AdminSyncListener = (event: DemoSyncEvent) => void;
 
-let adminSocket: WebSocket | null =
-  null;
+let adminSocket: WebSocket | null = null;
 
-const adminListeners =
-  new Set<AdminSyncListener>();
+const adminListeners = new Set<AdminSyncListener>();
 
 interface DemoConnection {
   socket: WebSocket | null;
@@ -84,51 +67,32 @@ interface DemoConnection {
   shouldReconnect: boolean;
 }
 
-const connections = new Map<
-  string,
-  DemoConnection
->();
+const connections = new Map<string, DemoConnection>();
 
 const RECONNECT_DELAY = 1500;
 
-const getSyncUrl = (
-  sessionId: string,
-): string => {
-  const baseUrl =
-    import.meta.env.VITE_DEMO_SYNC_URL;
+const getSyncUrl = (sessionId: string): string => {
+  const baseUrl = import.meta.env.VITE_DEMO_SYNC_URL;
 
   if (!baseUrl) {
-    throw new Error(
-      'VITE_DEMO_SYNC_URL is not configured.',
-    );
+    throw new Error('VITE_DEMO_SYNC_URL is not configured.');
   }
 
   const url = new URL(baseUrl);
 
-  url.searchParams.set(
-    'sessionId',
-    sessionId,
-  );
+  url.searchParams.set('sessionId', sessionId);
 
   return url.toString();
 };
 
-const notifyConnectionStatus = (
-  connection: DemoConnection,
-  status: DemoConnectionStatus,
-) => {
-  connection.connectionListeners.forEach(
-    (listener) => {
-      listener(status);
-    },
-  );
+const notifyConnectionStatus = (connection: DemoConnection, status: DemoConnectionStatus) => {
+  connection.connectionListeners.forEach((listener) => {
+    listener(status);
+  });
 };
 
-const getOrCreateConnection = (
-  sessionId: string,
-): DemoConnection => {
-  const existingConnection =
-    connections.get(sessionId);
+const getOrCreateConnection = (sessionId: string): DemoConnection => {
+  const existingConnection = connections.get(sessionId);
 
   if (existingConnection) {
     return existingConnection;
@@ -136,332 +100,208 @@ const getOrCreateConnection = (
 
   const connection: DemoConnection = {
     socket: null,
-    eventListeners:
-      new Set<DemoSyncListener>(),
-    connectionListeners:
-      new Set<ConnectionListener>(),
+    eventListeners: new Set<DemoSyncListener>(),
+    connectionListeners: new Set<ConnectionListener>(),
     reconnectTimer: null,
     shouldReconnect: true,
   };
 
-  connections.set(
-    sessionId,
-    connection,
-  );
+  connections.set(sessionId, connection);
 
   return connection;
 };
 
-const connect = (
-  sessionId: string,
-): DemoConnection => {
-  const connection =
-    getOrCreateConnection(sessionId);
+const connect = (sessionId: string): DemoConnection => {
+  const connection = getOrCreateConnection(sessionId);
 
-  if (
-    connection.socket?.readyState ===
-      WebSocket.OPEN ||
-    connection.socket?.readyState ===
-      WebSocket.CONNECTING
-  ) {
+  if (connection.socket?.readyState === WebSocket.OPEN || connection.socket?.readyState === WebSocket.CONNECTING) {
     return connection;
   }
 
-  notifyConnectionStatus(
-    connection,
-    'connecting',
-  );
+  notifyConnectionStatus(connection, 'connecting');
 
-  const socket = new WebSocket(
-    getSyncUrl(sessionId),
-  );
+  const socket = new WebSocket(getSyncUrl(sessionId));
 
   connection.socket = socket;
 
-  socket.addEventListener(
-    'open',
-    () => {
-      notifyConnectionStatus(
-        connection,
-        'connected',
-      );
-    },
-  );
+  socket.addEventListener('open', () => {
+    notifyConnectionStatus(connection, 'connected');
+  });
 
-  socket.addEventListener(
-    'message',
-    (message) => {
-      try {
-        const event = JSON.parse(
-          String(message.data),
-        ) as DemoSyncEvent;
+  socket.addEventListener('message', (message) => {
+    try {
+      const event = JSON.parse(String(message.data)) as DemoSyncEvent;
 
-        connection.eventListeners.forEach(
-          (listener) => {
-            listener(event);
-          },
-        );
-      } catch {
-        console.error(
-          'Invalid demo sync message received.',
-        );
-      }
-    },
-  );
+      connection.eventListeners.forEach((listener) => {
+        listener(event);
+      });
+    } catch {
+      console.error('Invalid demo sync message received.');
+    }
+  });
 
-  socket.addEventListener(
-    'close',
-    () => {
-      connection.socket = null;
+  socket.addEventListener('close', (event) => {
+    connection.socket = null;
 
-      notifyConnectionStatus(
-        connection,
-        'disconnected',
-      );
+    notifyConnectionStatus(connection, 'disconnected');
 
-      if (!connection.shouldReconnect) {
-        return;
-      }
+    if (event.code === 4000) {
+      connection.shouldReconnect = false;
 
-      if (connection.reconnectTimer) {
-        clearTimeout(
-          connection.reconnectTimer,
-        );
-      }
+      connection.eventListeners.forEach((listener) => {
+        listener({
+          type: 'session-closed',
+          sessionId,
+        });
+      });
 
-      connection.reconnectTimer =
-        setTimeout(() => {
-          connection.reconnectTimer =
-            null;
+      return;
+    }
 
-          connect(sessionId);
-        }, RECONNECT_DELAY);
-    },
-  );
+    if (!connection.shouldReconnect) {
+      return;
+    }
 
-  socket.addEventListener(
-    'error',
-    () => {
-      socket.close();
-    },
-  );
+    if (connection.reconnectTimer) {
+      clearTimeout(connection.reconnectTimer);
+    }
+
+    connection.reconnectTimer = setTimeout(() => {
+      connection.reconnectTimer = null;
+
+      connect(sessionId);
+    }, RECONNECT_DELAY);
+  });
+
+  socket.addEventListener('error', () => {
+    socket.close();
+  });
 
   return connection;
 };
 
-export const sendDemoEvent = async (
-  event: DemoSyncEvent,
-): Promise<void> => {
-  const connection =
-    connect(event.sessionId);
+export const sendDemoEvent = async (event: DemoSyncEvent): Promise<void> => {
+  const connection = connect(event.sessionId);
 
-  const socket =
-    connection.socket;
+  const socket = connection.socket;
 
-  if (
-    socket?.readyState === WebSocket.OPEN
-  ) {
-    socket.send(
-      JSON.stringify(event),
-    );
+  if (socket?.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify(event));
 
     return;
   }
 
-  await new Promise<void>(
-    (resolve, reject) => {
-      const timeout =
-        window.setTimeout(() => {
-          reject(
-            new Error(
-              'Demo sync connection timeout.',
-            ),
-          );
-        }, 5000);
+  await new Promise<void>((resolve, reject) => {
+    const timeout = window.setTimeout(() => {
+      reject(new Error('Demo sync connection timeout.'));
+    }, 5000);
 
-      const handleOpen = () => {
-        window.clearTimeout(timeout);
+    const handleOpen = () => {
+      window.clearTimeout(timeout);
 
-        connection.socket?.send(
-          JSON.stringify(event),
-        );
+      connection.socket?.send(JSON.stringify(event));
 
-        resolve();
-      };
+      resolve();
+    };
 
-      const handleError = () => {
-        window.clearTimeout(timeout);
+    const handleError = () => {
+      window.clearTimeout(timeout);
 
-        reject(
-          new Error(
-            'Unable to connect to demo sync server.',
-          ),
-        );
-      };
+      reject(new Error('Unable to connect to demo sync server.'));
+    };
 
-      connection.socket?.addEventListener(
-        'open',
-        handleOpen,
-        {
-          once: true,
-        },
-      );
+    connection.socket?.addEventListener('open', handleOpen, {
+      once: true,
+    });
 
-      connection.socket?.addEventListener(
-        'error',
-        handleError,
-        {
-          once: true,
-        },
-      );
-    },
-  );
+    connection.socket?.addEventListener('error', handleError, {
+      once: true,
+    });
+  });
 };
 
-export const subscribeToDemoEvents = (
-  sessionId: string,
-  listener: DemoSyncListener,
-) => {
-  const connection =
-    connect(sessionId);
+export const subscribeToDemoEvents = (sessionId: string, listener: DemoSyncListener) => {
+  const connection = connect(sessionId);
 
-  connection.eventListeners.add(
-    listener,
-  );
+  connection.eventListeners.add(listener);
 
   return () => {
-    connection.eventListeners.delete(
-      listener,
-    );
+    connection.eventListeners.delete(listener);
   };
 };
 
-export const subscribeToConnectionStatus = (
-  sessionId: string,
-  listener: ConnectionListener,
-) => {
-  const connection =
-    connect(sessionId);
+export const subscribeToConnectionStatus = (sessionId: string, listener: ConnectionListener) => {
+  const connection = connect(sessionId);
 
-  connection.connectionListeners.add(
-    listener,
-  );
+  connection.connectionListeners.add(listener);
 
-  const currentState =
-    connection.socket?.readyState;
+  const currentState = connection.socket?.readyState;
 
-  if (
-    currentState === WebSocket.OPEN
-  ) {
+  if (currentState === WebSocket.OPEN) {
     listener('connected');
-  } else if (
-    currentState === WebSocket.CONNECTING
-  ) {
+  } else if (currentState === WebSocket.CONNECTING) {
     listener('connecting');
   } else {
     listener('disconnected');
   }
 
   return () => {
-    connection.connectionListeners.delete(
-      listener,
-    );
+    connection.connectionListeners.delete(listener);
   };
 };
 
 const getAdminSyncUrl = () => {
-  const baseUrl =
-    import.meta.env
-      .VITE_DEMO_SYNC_URL;
+  const baseUrl = import.meta.env.VITE_DEMO_SYNC_URL;
 
   if (!baseUrl) {
-    throw new Error(
-      'VITE_DEMO_SYNC_URL is not configured.',
-    );
+    throw new Error('VITE_DEMO_SYNC_URL is not configured.');
   }
 
-  const url =
-    new URL(baseUrl);
+  const url = new URL(baseUrl);
 
-  url.searchParams.set(
-    'role',
-    'admin',
-  );
+  url.searchParams.set('role', 'admin');
 
   return url.toString();
 };
 
 const connectAdmin = () => {
-  if (
-    adminSocket?.readyState ===
-      WebSocket.OPEN ||
-    adminSocket?.readyState ===
-      WebSocket.CONNECTING
-  ) {
+  if (adminSocket?.readyState === WebSocket.OPEN || adminSocket?.readyState === WebSocket.CONNECTING) {
     return;
   }
 
-  adminSocket =
-    new WebSocket(
-      getAdminSyncUrl(),
-    );
+  adminSocket = new WebSocket(getAdminSyncUrl());
 
-  adminSocket.addEventListener(
-    'message',
-    (message) => {
-      try {
-        const event =
-          JSON.parse(
-            String(message.data),
-          ) as DemoSyncEvent;
+  adminSocket.addEventListener('message', (message) => {
+    try {
+      const event = JSON.parse(String(message.data)) as DemoSyncEvent;
 
-        adminListeners.forEach(
-          (listener) => {
-            listener(event);
-          },
-        );
-      } catch {
-        console.error(
-          'Invalid admin sync message received.',
-        );
-      }
-    },
-  );
+      adminListeners.forEach((listener) => {
+        listener(event);
+      });
+    } catch {
+      console.error('Invalid admin sync message received.');
+    }
+  });
 
-  adminSocket.addEventListener(
-    'close',
-    () => {
-      adminSocket = null;
+  adminSocket.addEventListener('close', () => {
+    adminSocket = null;
 
-      window.setTimeout(
-        () => {
-          connectAdmin();
-        },
-        1500,
-      );
-    },
-  );
+    window.setTimeout(() => {
+      connectAdmin();
+    }, 1500);
+  });
 
-  adminSocket.addEventListener(
-    'error',
-    () => {
-      adminSocket?.close();
-    },
-  );
+  adminSocket.addEventListener('error', () => {
+    adminSocket?.close();
+  });
 };
 
-export const subscribeToAdminEvents = (
-  listener: AdminSyncListener,
-) => {
-  adminListeners.add(
-    listener,
-  );
+export const subscribeToAdminEvents = (listener: AdminSyncListener) => {
+  adminListeners.add(listener);
 
   connectAdmin();
 
   return () => {
-    adminListeners.delete(
-      listener,
-    );
+    adminListeners.delete(listener);
   };
 };
