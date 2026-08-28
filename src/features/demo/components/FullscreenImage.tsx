@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useLanguage } from '@/i18n/useLanguage';
 
@@ -11,22 +7,16 @@ interface FullscreenImageProps {
   onClose: () => void;
 }
 
-const FullscreenImage = ({
-  imageUrl,
-  onClose,
-}: FullscreenImageProps) => {
+const FullscreenImage = ({ imageUrl, onClose }: FullscreenImageProps) => {
   const { language } = useLanguage();
 
-  const containerRef =
-    useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [isNativeFullscreen, setIsNativeFullscreen] =
-    useState(false);
+  const [isNativeFullscreen, setIsNativeFullscreen] = useState(false);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      const isFullscreen =
-        document.fullscreenElement !== null;
+      const isFullscreen = document.fullscreenElement !== null;
 
       setIsNativeFullscreen(isFullscreen);
 
@@ -35,22 +25,15 @@ const FullscreenImage = ({
       }
     };
 
-    document.addEventListener(
-      'fullscreenchange',
-      handleFullscreenChange,
-    );
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
 
     return () => {
-      document.removeEventListener(
-        'fullscreenchange',
-        handleFullscreenChange,
-      );
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
     };
   }, [onClose]);
 
   useEffect(() => {
-    const container =
-      containerRef.current;
+    const container = containerRef.current;
 
     if (!container) {
       return;
@@ -84,11 +67,7 @@ const FullscreenImage = ({
       className="fullscreenImage"
       role="dialog"
       aria-modal="true"
-      aria-label={
-        language === 'fr'
-          ? 'Image protégée en plein écran'
-          : 'Protected image fullscreen'
-      }
+      aria-label={language === 'fr' ? 'Image protégée en plein écran' : 'Protected image fullscreen'}
     >
       <button
         type="button"
@@ -96,27 +75,15 @@ const FullscreenImage = ({
         onClick={() => {
           void handleClose();
         }}
-        aria-label={
-          language === 'fr'
-            ? 'Fermer le plein écran'
-            : 'Close fullscreen'
-        }
+        aria-label={language === 'fr' ? 'Fermer le plein écran' : 'Close fullscreen'}
       >
         ×
       </button>
 
-      <img
-        className="fullscreenImage__image"
-        src={imageUrl}
-        alt=""
-      />
+      <img className="fullscreenImage__image" src={imageUrl} alt="" />
 
       {!isNativeFullscreen && (
-        <span className="fullscreenImage__hint">
-          {language === 'fr'
-            ? 'Mode plein écran'
-            : 'Fullscreen mode'}
-        </span>
+        <span className="fullscreenImage__hint">{language === 'fr' ? 'Mode plein écran' : 'Fullscreen mode'}</span>
       )}
     </div>
   );

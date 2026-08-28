@@ -3,23 +3,14 @@
 .adminPage {
   min-height: 100svh;
 
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      rgb(119 103 255 / 8%),
-      transparent 28rem
-    ),
-    var(--color-background);
+  background: radial-gradient(circle at 50% 0%, rgb(119 103 255 / 8%), transparent 28rem), var(--color-background);
 
   &__main {
     width: 100%;
     max-width: var(--content-width);
 
     margin-inline: auto;
-    padding:
-      var(--space-xl)
-      1.25rem
-      var(--space-2xl);
+    padding: var(--space-xl) 1.25rem var(--space-2xl);
   }
 
   &__intro {
@@ -38,11 +29,7 @@
   &__title {
     margin-top: var(--space-sm);
 
-    font-size: clamp(
-      2.25rem,
-      10vw,
-      3rem
-    );
+    font-size: clamp(2.25rem, 10vw, 3rem);
     letter-spacing: -0.05em;
     line-height: 1;
   }
@@ -78,26 +65,46 @@
     }
   }
 
+  &__createButton {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-lg);
+
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+
+    & .button {
+      max-width: 256px;
+    }
+  }
+
   &__grid {
+    margin-top: var(--space-2xl);
     display: grid;
     gap: var(--space-lg);
 
     align-items: start;
 
     @include bp.desktop {
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0, 1fr)
-        );
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2xl);
+
+    color: var(--color-text-muted);
+    text-align: center;
   }
 
   @include bp.desktop {
     &__main {
-      padding:
-        var(--space-2xl)
-        var(--space-xl);
+      padding: var(--space-2xl) var(--space-xl);
     }
 
     &__title {
@@ -105,11 +112,7 @@
     }
 
     &__grid {
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0, 1fr)
-        );
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 }

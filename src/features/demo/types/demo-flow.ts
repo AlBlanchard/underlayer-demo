@@ -1,23 +1,12 @@
-export type DemoStep =
-  | 'identity'
-  | 'preparing'
-  | 'content'
-  | 'role-transition'
-  | 'upload'
-  | 'analysing'
-  | 'result';
+export type DemoStep = 'identity' | 'preparing' | 'content' | 'role-transition' | 'upload' | 'analysing' | 'result';
 
-  export const PREVIOUS_DEMO_STEP: Partial<
-  Record<DemoStep, DemoStep>
-> = {
+export const PREVIOUS_DEMO_STEP: Partial<Record<DemoStep, DemoStep>> = {
   'role-transition': 'content',
   upload: 'role-transition',
   result: 'upload',
 };
 
-export const getDemoProgressIndex = (
-  step: DemoStep,
-): number => {
+export const getDemoProgressIndex = (step: DemoStep): number => {
   switch (step) {
     case 'identity':
       return 0;

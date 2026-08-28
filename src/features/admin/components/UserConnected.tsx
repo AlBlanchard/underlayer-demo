@@ -6,20 +6,14 @@ interface ViewerConnectedProps {
   viewer: Viewer;
 }
 
-const ViewerConnected = ({
-  viewer,
-}: ViewerConnectedProps) => {
+const ViewerConnected = ({ viewer }: ViewerConnectedProps) => {
   const { t } = useLanguage();
-  
+
   return (
     <DemoPanel
       eyebrow={t.admin.viewerConnected.eyebrow}
       title={`${viewer.username} ${t.admin.viewerConnected.title}`}
-      description={
-        <>
-          {t.admin.viewerConnected.description}
-        </>
-      }
+      description={<>{t.admin.viewerConnected.description}</>}
     />
   );
 };

@@ -1,9 +1,6 @@
-import type {
-  AdminSession,
-} from '../types/admin-session';
+import type { AdminSession } from '../types/admin-session';
 
-const now =
-  new Date().toISOString();
+const now = new Date().toISOString();
 
 export const adminSessionsMock: AdminSession[] = [
   {
@@ -15,19 +12,16 @@ export const adminSessionsMock: AdminSession[] = [
       username: 'Alexis',
     },
 
-    protectedImageUrl:
-      '/demo/protected-image.jpg',
+    protectedImageUrl: '/demo/protected-image.jpg',
 
-    uploadedImageUrl:
-      '/demo/protected-image.jpg',
+    uploadedImageUrl: '/demo/protected-image.jpg',
 
     identifiedViewer: {
       id: 'viewer-1',
       username: 'Alexis',
     },
 
-    screenshotPreviewUrl:
-      '/demo/protected-image.jpg',
+    screenshotPreviewUrl: '/demo/protected-image.jpg',
 
     createdAt: now,
     updatedAt: now,
@@ -42,11 +36,9 @@ export const adminSessionsMock: AdminSession[] = [
       username: 'Sarah',
     },
 
-    protectedImageUrl:
-      '/demo/protected-image.jpg',
+    protectedImageUrl: '/demo/protected-image.jpg',
 
-    uploadedImageUrl:
-      null,
+    uploadedImageUrl: null,
 
     identifiedViewer: null,
 
@@ -65,8 +57,7 @@ export const adminSessionsMock: AdminSession[] = [
       username: 'Pierre',
     },
 
-    protectedImageUrl:
-      '/demo/protected-image.jpg',
+    protectedImageUrl: '/demo/protected-image.jpg',
 
     uploadedImageUrl: null,
 

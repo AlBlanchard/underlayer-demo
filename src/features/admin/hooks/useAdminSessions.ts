@@ -1,50 +1,28 @@
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 
-import {
-  subscribeToAdminEvents,
-} from '@/services/demo-sync.service';
+import { subscribeToAdminEvents } from '@/services/demo-sync.service';
 
-import {
-  closeDemoSession,
-  createDemoSession,
-  getAdminSessions,
-} from '../services/admin-session.service';
+import { closeDemoSession, createDemoSession, getAdminSessions } from '../services/admin-session.service';
 
-import type {
-  AdminSession,
-} from '../types/admin-session';
+import type { AdminSession } from '../types/admin-session';
 
 export const useAdminSessions = () => {
-  const [
-    sessions,
-    setSessions,
-  ] = useState<AdminSession[]>([]);
+  const [sessions, setSessions] = useState<AdminSession[]>([]);
 
-  const [isCreating, setIsCreating] =
-      useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
-      const createSession = async () => {
+  const createSession = async () => {
     setIsCreating(true);
 
     try {
-      const session =
-        await createDemoSession();
+      const session = await createDemoSession();
 
       const adminSession: AdminSession = {
         ...session,
-        screenshotPreviewUrl:
-          session.uploadedImageUrl,
+        screenshotPreviewUrl: session.uploadedImageUrl,
       };
 
-      setSessions(
-        (currentSessions) => [
-          adminSession,
-          ...currentSessions,
-        ],
-      );
+      setSessions((currentSessions) => [adminSession, ...currentSessions]);
 
       return adminSession;
     } finally {
@@ -52,91 +30,50 @@ export const useAdminSessions = () => {
     }
   };
 
-  const updateSession = (
-    sessionId: string,
-    updater: (
-      session: AdminSession,
-    ) => AdminSession,
-  ) => {
-    setSessions(
-      (currentSessions) => {
-        const existingSession =
-          currentSessions.find(
-            (session) =>
-              session.id ===
-              sessionId,
-          );
+  const updateSession = (sessionId: string, updater: (session: AdminSession) => AdminSession) => {
+    setSessions((currentSessions) => {
+      const existingSession = currentSessions.find((session) => session.id === sessionId);
 
-        if (!existingSession) {
-          return currentSessions;
-        }
+      if (!existingSession) {
+        return currentSessions;
+      }
 
-        return currentSessions.map(
-          (session) =>
-            session.id ===
-            sessionId
-              ? updater(session)
-              : session,
-        );
-      },
-    );
+      return currentSessions.map((session) => (session.id === sessionId ? updater(session) : session));
+    });
   };
 
-  const removeSession = (
-    sessionId: string,
-  ) => {
-    setSessions(
-      (currentSessions) =>
-        currentSessions.filter(
-          (session) =>
-            session.id !==
-            sessionId,
-        ),
-    );
+  const removeSession = (sessionId: string) => {
+    setSessions((currentSessions) => currentSessions.filter((session) => session.id !== sessionId));
   };
 
-  const closeSession = async (
-    sessionId: string,
-  ) => {
-    await closeDemoSession(
-      sessionId,
-    );
+  const closeSession = async (sessionId: string) => {
+    await closeDemoSession(sessionId);
 
-    removeSession(
-      sessionId,
-    );
+    removeSession(sessionId);
   };
 
   useEffect(() => {
     let ignore = false;
 
-    const loadSessions =
-      async () => {
-        try {
-          const currentSessions =
-            await getAdminSessions();
+    const loadSessions = async () => {
+      try {
+        const currentSessions = await getAdminSessions();
 
-          if (ignore) {
-            return;
-          }
-
-          setSessions(
-            currentSessions.map(
-              (session) => ({
-                ...session,
-
-                screenshotPreviewUrl:
-                  session.uploadedImageUrl,
-              }),
-            ),
-          );
-        } catch (error) {
-          console.error(
-            'Unable to load admin sessions.',
-            error,
-          );
+        if (ignore) {
+          return;
         }
-      };
+
+        setSessions(
+          currentSessions.map((session) => ({
+            ...session,
+
+            screenshotPreviewUrl: session.uploadedImageUrl,
+          })),
+        );
+      } catch (error) {
+        console.error('Unable to load admin sessions.', error);
+      }
+    };
 
     void loadSessions();
 
@@ -146,186 +83,131 @@ export const useAdminSessions = () => {
   }, []);
 
   useEffect(() => {
-    return subscribeToAdminEvents(
-      (event) => {
-        const now =
-          new Date().toISOString();
+    return subscribeToAdminEvents((event) => {
+      const now = new Date().toISOString();
 
-        switch (event.type) {
-          case 'viewer-connected': {
-            setSessions(
-              (currentSessions) => {
-                const existing =
-                  currentSessions.some(
-                    (session) =>
-                      session.id ===
-                      event.sessionId,
-                  );
+      switch (event.type) {
+        case 'viewer-connected': {
+          setSessions((currentSessions) => {
+            const existing = currentSessions.some((session) => session.id === event.sessionId);
 
-                if (existing) {
-                  return currentSessions.map(
-                    (session) =>
-                      session.id ===
-                      event.sessionId
-                        ? {
-                            ...session,
-                            viewer:
-                              event.viewer,
-                            status:
-                              'viewer-connected',
-                            updatedAt:
-                              now,
-                          }
-                        : session,
-                  );
-                }
+            if (existing) {
+              return currentSessions.map((session) =>
+                session.id === event.sessionId
+                  ? {
+                      ...session,
+                      viewer: event.viewer,
+                      status: 'viewer-connected',
+                      updatedAt: now,
+                    }
+                  : session,
+              );
+            }
 
-                const newSession: AdminSession = {
-                  id:
-                    event.sessionId,
+            const newSession: AdminSession = {
+              id: event.sessionId,
 
-                  status:
-                    'viewer-connected',
+              status: 'viewer-connected',
 
-                  viewer:
-                    event.viewer,
+              viewer: event.viewer,
 
-                  protectedImageUrl:
-                    null,
+              protectedImageUrl: null,
 
-                  uploadedImageUrl:
-                    null,
+              uploadedImageUrl: null,
 
-                  identifiedViewer:
-                    null,
+              identifiedViewer: null,
 
-                  screenshotPreviewUrl:
-                    null,
+              screenshotPreviewUrl: null,
 
-                  createdAt:
-                    now,
+              createdAt: now,
 
-                  updatedAt:
-                    now,
-                };
+              updatedAt: now,
+            };
 
-                return [
-                  newSession,
-                  ...currentSessions,
-                ];
-              },
-            );
+            return [newSession, ...currentSessions];
+          });
 
-            break;
-          }
-
-          case 'encoding-started':
-            updateSession(
-              event.sessionId,
-              (session) => ({
-                ...session,
-                status: 'encoding',
-                updatedAt: now,
-              }),
-            );
-
-            break;
-
-          case 'content-ready':
-            updateSession(
-              event.sessionId,
-              (session) => ({
-                ...session,
-                status:
-                  'content-ready',
-                updatedAt: now,
-              }),
-            );
-
-            break;
-
-          case 'screenshot-uploaded':
-            updateSession(
-              event.sessionId,
-              (session) => ({
-                ...session,
-                status:
-                  'waiting-for-upload',
-
-                uploadedImageUrl:
-                  event.screenshotUrl,
-
-                screenshotPreviewUrl:
-                  event.screenshotUrl,
-
-                updatedAt: now,
-              }),
-            );
-
-            break;
-
-          case 'analysis-started':
-            updateSession(
-              event.sessionId,
-              (session) => ({
-                ...session,
-                status:
-                  'analysing',
-                updatedAt: now,
-              }),
-            );
-
-            break;
-
-          case 'viewer-identified':
-            updateSession(
-              event.sessionId,
-              (session) => ({
-                ...session,
-                status:
-                  'identified',
-
-                identifiedViewer:
-                  event.identifiedViewer,
-
-                updatedAt: now,
-              }),
-            );
-
-            break;
-
-          case 'session-restarted':
-            updateSession(
-              event.sessionId,
-              (session) => ({
-                ...session,
-
-                status:
-                  'waiting-for-viewer',
-
-                viewer: null,
-
-                protectedImageUrl: null,
-                uploadedImageUrl: null,
-                identifiedViewer: null,
-
-                screenshotPreviewUrl: null,
-
-                updatedAt: now,
-              }),
-            );
-
-            break;
-
-          case 'session-closed':
-            removeSession(
-              event.sessionId,
-            );
-
-            break;
+          break;
         }
-      },
-    );
+
+        case 'encoding-started':
+          updateSession(event.sessionId, (session) => ({
+            ...session,
+            status: 'encoding',
+            updatedAt: now,
+          }));
+
+          break;
+
+        case 'content-ready':
+          updateSession(event.sessionId, (session) => ({
+            ...session,
+            status: 'content-ready',
+            updatedAt: now,
+          }));
+
+          break;
+
+        case 'screenshot-uploaded':
+          updateSession(event.sessionId, (session) => ({
+            ...session,
+            status: 'waiting-for-upload',
+
+            uploadedImageUrl: event.screenshotUrl,
+
+            screenshotPreviewUrl: event.screenshotUrl,
+
+            updatedAt: now,
+          }));
+
+          break;
+
+        case 'analysis-started':
+          updateSession(event.sessionId, (session) => ({
+            ...session,
+            status: 'analysing',
+            updatedAt: now,
+          }));
+
+          break;
+
+        case 'viewer-identified':
+          updateSession(event.sessionId, (session) => ({
+            ...session,
+            status: 'identified',
+
+            identifiedViewer: event.identifiedViewer,
+
+            updatedAt: now,
+          }));
+
+          break;
+
+        case 'session-restarted':
+          updateSession(event.sessionId, (session) => ({
+            ...session,
+
+            status: 'waiting-for-viewer',
+
+            viewer: null,
+
+            protectedImageUrl: null,
+            uploadedImageUrl: null,
+            identifiedViewer: null,
+
+            screenshotPreviewUrl: null,
+
+            updatedAt: now,
+          }));
+
+          break;
+
+        case 'session-closed':
+          removeSession(event.sessionId);
+
+          break;
+      }
+    });
   }, []);
 
   return {

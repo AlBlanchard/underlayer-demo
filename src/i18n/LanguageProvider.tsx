@@ -1,21 +1,10 @@
-import {
-  useState,
-  type ReactNode,
-} from 'react';
+import { useState, type ReactNode } from 'react';
 
-import {
-  DEFAULT_LANGUAGE,
-  isLanguage,
-  type Language,
-} from './i18n.types';
+import { DEFAULT_LANGUAGE, isLanguage, type Language } from './i18n.types';
 
-import {
-  LanguageContext,
-} from './language-context';
+import { LanguageContext } from './language-context';
 
-import {
-  translations,
-} from './translations';
+import { translations } from './translations';
 
 import type { Translations } from './translations.ts';
 
@@ -24,13 +13,9 @@ interface LanguageProviderProps {
 }
 
 const getInitialLanguage = (): Language => {
-  const params =
-    new URLSearchParams(
-      window.location.search,
-    );
+  const params = new URLSearchParams(window.location.search);
 
-  const queryLanguage =
-    params.get('lang');
+  const queryLanguage = params.get('lang');
 
   if (isLanguage(queryLanguage)) {
     return queryLanguage;
@@ -39,13 +24,8 @@ const getInitialLanguage = (): Language => {
   return DEFAULT_LANGUAGE;
 };
 
-export const LanguageProvider = ({
-  children,
-}: LanguageProviderProps) => {
-  const [language, setLanguage] =
-    useState<Language>(
-      getInitialLanguage,
-    );
+export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+  const [language, setLanguage] = useState<Language>(getInitialLanguage);
 
   return (
     <LanguageContext.Provider

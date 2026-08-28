@@ -18,11 +18,7 @@
   &__title {
     margin-top: var(--space-md);
 
-    font-size: clamp(
-      2.25rem,
-      10vw,
-      3rem
-    );
+    font-size: clamp(2.25rem, 10vw, 3rem);
     letter-spacing: -0.04em;
     line-height: 1;
   }
@@ -159,8 +155,7 @@
 
     opacity: 0;
 
-    transition:
-      opacity var(--transition-default);
+    transition: opacity var(--transition-default);
 
     &--loaded {
       opacity: 1;
@@ -186,11 +181,7 @@
       border-top-color: var(--color-primary);
       border-radius: 50%;
 
-      animation:
-        viewer-loading-spin
-        0.8s
-        linear
-        infinite;
+      animation: viewer-loading-spin 0.8s linear infinite;
     }
   }
 
@@ -221,9 +212,7 @@
       &:hover:not(:disabled) {
         border-color: var(--color-primary);
 
-        box-shadow:
-          0 8px 28px
-          rgb(119 103 255 / 12%);
+        box-shadow: 0 8px 28px rgb(119 103 255 / 12%);
 
         transform: translateY(-1px);
       }
