@@ -465,6 +465,18 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    const event = {
+      type: 'session-closed',
+      sessionId,
+    };
+
+    const message = JSON.stringify(event);
+
+    // Informe d'abord tous les clients avant de fermer leurs WebSockets.
+    // Le code 4000 reste un second filet de sécurité côté frontend.
+    broadcastToSession(sessionId, message);
+    broadcastToAdmins(message);
+
     demoSessions.delete(sessionId);
 
     const clients = sessions.get(sessionId);
@@ -478,13 +490,6 @@ const server = http.createServer(async (request, response) => {
 
       sessions.delete(sessionId);
     }
-
-    const event = {
-      type: 'session-closed',
-      sessionId,
-    };
-
-    broadcastToAdmins(JSON.stringify(event));
 
     sendJson(response, 200, {
       success: true,
@@ -561,13 +566,34 @@ webSocketServer.on('connection', (socket, request) => {
     return;
   }
 
+  // Une session supprimée ne doit jamais pouvoir rouvrir un canal WebSocket.
+  if (!demoSessions.has(sessionId)) {
+    socket.close(4000, 'Session closed');
+
+    return;
+  }
+
   addClientToSession(sessionId, socket);
 
   socket.on('message', (data) => {
+    // Un socket encore vivant après suppression de sa session est immédiatement invalidé.
+    if (!demoSessions.has(sessionId)) {
+      socket.close(4000, 'Session closed');
+
+      return;
+    }
+
     const message = data.toString();
 
     try {
       const event = JSON.parse(message);
+
+      // Un client ne peut envoyer des événements que pour sa propre session.
+      if (event.sessionId !== sessionId) {
+        socket.close(1008, 'Invalid session');
+
+        return;
+      }
 
       updateDemoSession(event);
     } catch {
@@ -577,7 +603,6 @@ webSocketServer.on('connection', (socket, request) => {
     }
 
     broadcastToSession(sessionId, message, socket);
-
     broadcastToAdmins(message);
   });
 
