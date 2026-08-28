@@ -1,5 +1,6 @@
 import DemoProgress from '@/components/common/DemoProgress';
 import { useLanguage } from '@/i18n/useLanguage';
+import { useState } from 'react';
 
 import type {
   AdminSession,
@@ -12,10 +13,14 @@ import {
 
 interface SessionCardProps {
   session: AdminSession;
+  onClose: (
+    sessionId: string,
+  ) => void;
 }
 
 const SessionCard = ({
   session,
+  onClose,
 }: SessionCardProps) => {
   const { t, language } = useLanguage();
 
@@ -65,6 +70,24 @@ const SessionCard = ({
         minute: '2-digit',
       },
     );
+
+  const [isCopied, setIsCopied] =
+  useState(false);
+
+    const demoUrl =
+      `${window.location.origin}/demo/${session.id}`;
+
+    const handleCopyUrl = async () => {
+      await navigator.clipboard.writeText(
+        demoUrl,
+      );
+
+      setIsCopied(true);
+
+      window.setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    };
 
   return (
     <details className="sessionCard">
@@ -215,6 +238,50 @@ const SessionCard = ({
             </strong>
           </div>
         )}
+
+        <div className="sessionCard__share">
+          <span className="sessionCard__sectionLabel">
+            {language === 'fr'
+              ? 'Lien de la démonstration'
+              : 'Demo link'}
+          </span>
+
+          <div className="sessionCard__shareRow">
+            <span className="sessionCard__url">
+              {demoUrl}
+            </span>
+
+            <button
+              type="button"
+              className="sessionCard__copy"
+              onClick={() => {
+                void handleCopyUrl();
+              }}
+            >
+              {isCopied
+                ? language === 'fr'
+                  ? 'Copié !'
+                  : 'Copied!'
+                : language === 'fr'
+                  ? 'Copier'
+                  : 'Copy'}
+            </button>
+          </div>
+        </div>
+
+        <div className="sessionCard__actions">
+          <button
+            type="button"
+            className="sessionCard__close"
+            onClick={() => {
+              onClose(session.id);
+            }}
+          >
+            {language === 'fr'
+              ? 'Fermer la session'
+              : 'Close session'}
+          </button>
+        </div>
       </div>
     </details>
   );

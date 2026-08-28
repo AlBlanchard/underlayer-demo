@@ -20,6 +20,11 @@ export type DemoSyncEvent =
       viewer: Viewer;
     }
   | {
+    type: 'creator-phase-entered';
+    sessionId: string;
+    viewer: Viewer;
+  }
+  | {
       type:
         'screenshot-uploaded';
       sessionId: string;
@@ -41,6 +46,10 @@ export type DemoSyncEvent =
     }
   | {
     type: 'session-restarted';
+    sessionId: string;
+  }
+  | {
+    type: 'session-closed';
     sessionId: string;
   };
 

@@ -1,14 +1,51 @@
-import AppHeader from '@/components/layout/AppHeader';
-import SessionCard from '../components/SessionCard';
+import {
+  useState,
+} from 'react';
+
+import type {
+  AdminSession,
+} from '../types/admin-session';
 
 import {
   useAdminSessions,
 } from '../hooks/useAdminSessions';
 
+import CreateDemoPanel from '../components/CreateDemoPanel';
+import AppHeader from '@/components/layout/AppHeader';
+import SessionCard from '../components/SessionCard';
+import Button from '@/components/common/Button';
+
 const AdminPage = () => {
+  const [
+    createdSession,
+    setCreatedSession,
+  ] = useState<AdminSession | null>(
+    null,
+  );
+
   const {
     sessions,
+    createSession,
+    closeSession,
+    isCreating,
   } = useAdminSessions();
+
+  const handleCreateSession =
+  async () => {
+    try {
+      const session =
+        await createSession();
+
+      setCreatedSession(
+        session,
+      );
+    } catch (error) {
+      console.error(
+        'Unable to create demo session.',
+        error,
+      );
+    }
+  };
 
   return (
     <div className="adminPage">
@@ -40,7 +77,30 @@ const AdminPage = () => {
               {sessions.length}{' '}
               actives
             </span>
+
+            <Button
+              type="button"
+              disabled={isCreating}
+              onClick={() => {
+                void handleCreateSession();
+              }}
+            >
+              {isCreating
+                ? 'Création...'
+                : 'Nouvelle démo'}
+            </Button>
           </div>
+
+          {createdSession && (
+            <CreateDemoPanel
+              sessionId={
+                createdSession.id
+              }
+              onClose={() => {
+                setCreatedSession(null);
+              }}
+            />
+          )}
 
           {sessions.length === 0 ? (
             <div className="adminPage__empty">
@@ -50,7 +110,7 @@ const AdminPage = () => {
 
               <p>
                 Les démonstrations apparaîtront ici
-                automatiquement lorsqu’un utilisateur
+                automatiquement lorsqu'un utilisateur
                 se connectera.
               </p>
             </div>
@@ -61,6 +121,11 @@ const AdminPage = () => {
                   <SessionCard
                     key={session.id}
                     session={session}
+                    onClose={(sessionId) => {
+                      void closeSession(
+                        sessionId,
+                      );
+                    }}
                   />
                 ),
               )}

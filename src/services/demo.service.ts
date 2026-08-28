@@ -69,3 +69,34 @@ export const analyseScreenshot =
 
     return viewer;
   };
+
+export const getSessionById = async (
+  sessionId: string,
+): Promise<DemoSession> => {
+  const apiUrl =
+    import.meta.env.VITE_DEMO_API_URL;
+
+  if (!apiUrl) {
+    throw new Error(
+      'VITE_DEMO_API_URL is not configured.',
+    );
+  }
+
+  const response =
+    await fetch(
+      `${apiUrl}/sessions/${sessionId}`,
+    );
+
+  if (!response.ok) {
+    throw new Error(
+      'Demo session not found.',
+    );
+  }
+
+  const data =
+    await response.json() as {
+      session: DemoSession;
+    };
+
+  return data.session;
+};
