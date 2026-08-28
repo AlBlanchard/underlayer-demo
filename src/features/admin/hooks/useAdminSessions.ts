@@ -8,6 +8,8 @@ import {
 } from '@/services/demo-sync.service';
 
 import {
+  closeDemoSession,
+  createDemoSession,
   getAdminSessions,
 } from '../services/admin-session.service';
 
@@ -20,6 +22,35 @@ export const useAdminSessions = () => {
     sessions,
     setSessions,
   ] = useState<AdminSession[]>([]);
+
+  const [isCreating, setIsCreating] =
+      useState(false);
+
+      const createSession = async () => {
+    setIsCreating(true);
+
+    try {
+      const session =
+        await createDemoSession();
+
+      const adminSession: AdminSession = {
+        ...session,
+        screenshotPreviewUrl:
+          session.uploadedImageUrl,
+      };
+
+      setSessions(
+        (currentSessions) => [
+          adminSession,
+          ...currentSessions,
+        ],
+      );
+
+      return adminSession;
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   const updateSession = (
     sessionId: string,
@@ -48,6 +79,31 @@ export const useAdminSessions = () => {
               : session,
         );
       },
+    );
+  };
+
+  const removeSession = (
+    sessionId: string,
+  ) => {
+    setSessions(
+      (currentSessions) =>
+        currentSessions.filter(
+          (session) =>
+            session.id !==
+            sessionId,
+        ),
+    );
+  };
+
+  const closeSession = async (
+    sessionId: string,
+  ) => {
+    await closeDemoSession(
+      sessionId,
+    );
+
+    removeSession(
+      sessionId,
     );
   };
 
@@ -260,6 +316,13 @@ export const useAdminSessions = () => {
             );
 
             break;
+
+          case 'session-closed':
+            removeSession(
+              event.sessionId,
+            );
+
+            break;
         }
       },
     );
@@ -267,5 +330,8 @@ export const useAdminSessions = () => {
 
   return {
     sessions,
+    createSession,
+    closeSession,
+    isCreating,
   };
 };

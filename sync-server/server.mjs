@@ -142,6 +142,23 @@ const updateDemoSession = (
       break;
     }
 
+    case 'creator-phase-entered': {
+      if (!existingSession) {
+        return;
+      }
+
+      demoSessions.set(
+        event.sessionId,
+        {
+          ...existingSession,
+          status: 'waiting-for-upload',
+          updatedAt: now,
+        },
+      );
+
+      break;
+    }
+
     case 'screenshot-uploaded': {
       if (!existingSession) {
         return;
@@ -262,7 +279,7 @@ const setCorsHeaders = (
 
   response.setHeader(
     'Access-Control-Allow-Methods',
-    'GET,POST,OPTIONS',
+    'GET,POST,DELETE,OPTIONS',
   );
 
   response.setHeader(
@@ -613,6 +630,48 @@ const server =
       }
 
       if (
+        request.method === 'POST' &&
+        url.pathname === '/sessions'
+      ) {
+        const sessionId =
+          randomUUID();
+
+        const now =
+          new Date().toISOString();
+
+        const session = {
+          id: sessionId,
+
+          status:
+            'waiting-for-viewer',
+
+          viewer: null,
+
+          protectedImageUrl: null,
+          uploadedImageUrl: null,
+          identifiedViewer: null,
+
+          createdAt: now,
+          updatedAt: now,
+        };
+
+        demoSessions.set(
+          sessionId,
+          session,
+        );
+
+        sendJson(
+          response,
+          201,
+          {
+            session,
+          },
+        );
+
+        return;
+      }
+
+      if (
         request.method === 'GET' &&
         url.pathname === '/sessions'
       ) {
@@ -634,6 +693,119 @@ const server =
           200,
           {
             sessions,
+          },
+        );
+
+        return;
+      }
+
+      if (
+        request.method === 'GET' &&
+        url.pathname.startsWith('/sessions/')
+      ) {
+        const sessionId =
+          url.pathname.replace(
+            '/sessions/',
+            '',
+          );
+
+        const session =
+          demoSessions.get(sessionId);
+
+        if (!session) {
+          sendJson(
+            response,
+            404,
+            {
+              error: 'Session not found.',
+            },
+          );
+
+          return;
+        }
+
+        sendJson(
+          response,
+          200,
+          {
+            session,
+          },
+        );
+
+        return;
+      }
+
+      if (
+        request.method === 'DELETE' &&
+        url.pathname.startsWith(
+          '/sessions/',
+        )
+      ) {
+        const sessionId =
+          url.pathname.replace(
+            '/sessions/',
+            '',
+          );
+
+        const session =
+          demoSessions.get(
+            sessionId,
+          );
+
+        if (!session) {
+          sendJson(
+            response,
+            404,
+            {
+              error:
+                'Session not found.',
+            },
+          );
+
+          return;
+        }
+
+        demoSessions.delete(
+          sessionId,
+        );
+
+        const clients =
+          sessions.get(
+            sessionId,
+          );
+
+        if (clients) {
+          for (const client of clients) {
+            if (
+              client.readyState ===
+              WebSocket.OPEN
+            ) {
+              client.close(
+                4000,
+                'Session closed',
+              );
+            }
+          }
+
+          sessions.delete(
+            sessionId,
+          );
+        }
+
+        const event = {
+          type: 'session-closed',
+          sessionId,
+        };
+
+        broadcastToAdmins(
+          JSON.stringify(event),
+        );
+
+        sendJson(
+          response,
+          200,
+          {
+            success: true,
           },
         );
 
