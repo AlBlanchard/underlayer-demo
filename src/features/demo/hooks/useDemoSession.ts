@@ -5,6 +5,9 @@ import { getSessionById } from '@/services/demo.service';
 
 export type SessionState = 'checking' | 'valid' | 'invalid';
 
+/**
+ * Hook personnalisé pour valider la session de démonstration et suivre sa disponibilité en temps réel.
+ */
 const useDemoSession = (sessionId?: string) => {
   const [sessionState, setSessionState] = useState<SessionState>('checking');
 
