@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useParams } from 'react-router';
 
@@ -7,10 +7,8 @@ import AppHeader from '@/components/layout/AppHeader';
 
 import { useLanguage } from '@/i18n/useLanguage';
 
-import { analyseScreenshot, connectViewer, encodeContent, getSessionById } from '@/services/demo.service';
-
-import { sendDemoEvent, subscribeToDemoEvents } from '@/services/demo-sync.service';
-
+import { analyseScreenshot, connectViewer, encodeContent } from '@/services/demo.service';
+import { sendDemoEvent } from '@/services/demo-sync.service';
 import { uploadScreenshot } from '@/services/demo-upload.service';
 
 import type { Viewer } from '@/types/demo';
@@ -23,76 +21,25 @@ import RoleTransition from '../components/RoleTransition';
 import ScreenshotUpload from '../components/ScreenshotUpload';
 import ViewerIdentityForm from '../components/ViewerIdentityForm';
 
+import useDemoSession from '../hooks/useDemoSession';
+
 import { getDemoProgressIndex, PREVIOUS_DEMO_STEP, type DemoStep } from '../types/demo-flow';
 
 type NavigationDirection = 'forward' | 'backward';
-
-type SessionState = 'checking' | 'valid' | 'invalid';
 
 const PROGRESS_TARGETS: readonly DemoStep[] = ['identity', 'content', 'role-transition', 'upload', 'result'];
 
 const DemoPage = () => {
   const { t } = useLanguage();
-
   const { sessionId } = useParams();
 
-  const [sessionState, setSessionState] = useState<SessionState>('checking');
+  const { isChecking, isValid, isInvalid } = useDemoSession(sessionId);
 
   const [step, setStep] = useState<DemoStep>('identity');
-
   const [viewer, setViewer] = useState<Viewer | null>(null);
-
   const [identifiedViewer, setIdentifiedViewer] = useState<Viewer | null>(null);
-
   const [protectedImageUrl, setProtectedImageUrl] = useState<string | null>(null);
-
   const [navigationDirection, setNavigationDirection] = useState<NavigationDirection>('forward');
-
-  useEffect(() => {
-    if (!sessionId) {
-      setSessionState('invalid');
-
-      return;
-    }
-
-    let ignore = false;
-
-    const validateSession = async () => {
-      setSessionState('checking');
-
-      try {
-        await getSessionById(sessionId);
-
-        if (!ignore) {
-          setSessionState('valid');
-        }
-      } catch {
-        if (!ignore) {
-          setSessionState('invalid');
-        }
-      }
-    };
-
-    void validateSession();
-
-    return () => {
-      ignore = true;
-    };
-  }, [sessionId]);
-
-  useEffect(() => {
-    if (!sessionId || sessionState !== 'valid') {
-      return;
-    }
-
-    const unsubscribe = subscribeToDemoEvents(sessionId, (event) => {
-      if (event.type === 'session-closed') {
-        setSessionState('invalid');
-      }
-    });
-
-    return unsubscribe;
-  }, [sessionId, sessionState]);
 
   const navigationDisabled = step === 'preparing' || step === 'analysing';
 
@@ -126,19 +73,17 @@ const DemoPage = () => {
 
   const goToStep = (targetStep: DemoStep, direction: NavigationDirection) => {
     setNavigationDirection(direction);
-
     setStep(targetStep);
   };
 
   const handleJoin = async (username: string) => {
-    if (!sessionId || sessionState !== 'valid') {
+    if (!sessionId || !isValid) {
       return;
     }
 
     const connectedViewer = await connectViewer(username);
 
     setViewer(connectedViewer);
-
     goToStep('preparing', 'forward');
 
     await sendDemoEvent({
@@ -227,14 +172,12 @@ const DemoPage = () => {
       goToStep('result', 'forward');
     } catch (error) {
       goToStep('upload', 'backward');
-
       throw error;
     }
   };
 
   const handleRetry = () => {
     setIdentifiedViewer(null);
-
     goToStep('upload', 'backward');
   };
 
@@ -263,13 +206,12 @@ const DemoPage = () => {
     }
 
     const targetIndex = getDemoProgressIndex(targetStep);
-
     const currentIndex = getDemoProgressIndex(step);
 
     goToStep(targetStep, targetIndex < currentIndex ? 'backward' : 'forward');
   };
 
-  if (sessionState === 'checking') {
+  if (isChecking) {
     return (
       <main className="demoPage">
         <AppHeader />
@@ -281,7 +223,7 @@ const DemoPage = () => {
     );
   }
 
-  if (sessionState === 'invalid') {
+  if (isInvalid) {
     return (
       <main className="demoPage">
         <AppHeader />
@@ -290,7 +232,7 @@ const DemoPage = () => {
           <div className="demoPage__invalidSession">
             <span>Session indisponible</span>
 
-            <h1>Cette démonstration n’est plus disponible.</h1>
+            <h1>Cette démonstration n'est plus disponible.</h1>
 
             <p>Ce lien a expiré ou la session a été fermée. Demandez un nouveau lien au présentateur.</p>
           </div>
