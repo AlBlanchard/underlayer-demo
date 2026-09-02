@@ -238,29 +238,17 @@ Pour utiliser le moteur Underlayer réel, cette étape devra appeler l'API charg
 Le flux cible devient alors :
 
 ```mermaid
-
 flowchart TB
+  User[Utilisateur]
+  Front[Frontend]
+  API[API Underlayer]
+  Content[Contenu protégé]
+  Result[Frontend]
 
-User[Utilisateur]
-
-Front[Frontend]
-
-API[API Underlayer]
-
-Content[Contenu protégé]
-
-Result[Frontend]
-
-
-
-User --> Front
-
-Front -->|Demande de génération| API
-
-API -->|Génération / encodage| Content
-
-Content --> Result
-
+  User --> Front
+  Front -->|Demande de génération| API
+  API -->|Génération / encodage| Content
+  Content --> Result
 ```
 
 Le frontend peut conserver ses états actuels de préparation et de progression pendant le traitement de l'API.
@@ -280,33 +268,19 @@ Dans une intégration complète, l'étape suivante consiste à transmettre cette
 Le flux cible est :
 
 ```mermaid
-
 flowchart TB
+  Capture[Capture utilisateur]
+  Front[Frontend]
+  Upload[API / Upload]
+  Engine[Moteur Underlayer]
+  Identification[Identification]
+  Result[Frontend + Admin]
 
-Capture[Capture utilisateur]
-
-Front[Frontend]
-
-Upload[API / Upload]
-
-Engine[Moteur Underlayer]
-
-Identification[Identification]
-
-Result[Frontend + Admin]
-
-
-
-Capture --> Front
-
-Front --> Upload
-
-Upload --> Engine
-
-Engine --> Identification
-
-Identification --> Result
-
+  Capture --> Front
+  Front --> Upload
+  Upload --> Engine
+  Engine --> Identification
+  Identification --> Result
 ```
 
 Le résultat retourné par l'API remplace alors l'identification simulée utilisée par la démonstration.
@@ -352,23 +326,14 @@ Lors du passage à l'API réelle, les événements correspondant aux traitements
 Par exemple :
 
 ```mermaid
-
 flowchart TB
+  Analyse[POST analyse]
+  Engine[Moteur Underlayer]
+  Result[Résultat API]
 
-Analyse[POST analyse]
-
-Engine[Moteur Underlayer]
-
-Result[Résultat API]
-
-
-
-Analyse -->|analysis-started| Engine
-
-Engine --> Result
-
-Result -->|viewer-identified| End[Identification terminée]
-
+  Analyse -->|analysis-started| Engine
+  Engine --> Result
+  Result -->|viewer-identified| End[Identification terminée]
 ```
 
 Cette approche permet de conserver l'interface Admin et le parcours utilisateur sans modifier leur fonctionnement général.
@@ -410,41 +375,23 @@ L'interface de démonstration et les communications WebSocket peuvent ainsi rest
 Le passage en production peut ainsi se faire progressivement :
 
 ```mermaid
-
 flowchart TB
+  Front[Frontend React]
+  API[API Backend]
+  Sync[Sync Server]
+  Engine[Underlayer Engine]
+  DB[(Database)]
+  Sessions[(Sessions)]
+  Storage[(Object Storage)]
 
-Front[Frontend React]
+  Front -->|HTTP| API
+  Front -->|WebSocket| Sync
 
-API[API Backend]
+  API --> Engine
+  API --> DB
+  Sync --> Sessions
 
-Sync[Sync Server]
-
-Engine[Underlayer Engine]
-
-DB[(Database)]
-
-Sessions[(Sessions)]
-
-Storage[(Object Storage)]
-
-
-
-Front -->|HTTP| API
-
-Front -->|WebSocket| Sync
-
-
-
-API --> Engine
-
-API --> DB
-
-Sync --> Sessions
-
-
-
-Engine --> Storage
-
+  Engine --> Storage
 ```
 
 La séparation actuelle entre composants, hooks, services et serveur permet de remplacer progressivement les éléments simulés sans réécrire le parcours utilisateur.
