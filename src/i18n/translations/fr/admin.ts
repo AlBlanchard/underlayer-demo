@@ -23,13 +23,13 @@ export const admin = {
 
   // CreateDemoPanel
   createDemo: {
-    eyebrow: 'New demonstration',
-    title: 'Invite a user',
-    description: 'Share this link with the prospect to start the demonstration.',
-    close: 'Close',
-    qrTitle: 'Demo QR code',
-    copied: 'Link copied!',
-    copy: 'Copy link',
+    eyebrow: 'Nouvelle démonstration',
+    title: 'Inviter un utilisateur',
+    description: 'Partagez ce lien avec le prospect pour démarrer la démonstration.',
+    close: 'Fermer',
+    qrTitle: 'QR code de la démonstration',
+    copied: 'Lien copié !',
+    copy: 'Copier le lien',
     session: 'Session',
   },
 
