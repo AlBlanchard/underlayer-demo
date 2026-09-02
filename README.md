@@ -375,23 +375,23 @@ L'interface de démonstration et les communications WebSocket peuvent ainsi rest
 Le passage en production peut ainsi se faire progressivement :
 
 ```mermaid
-flowchart TB
-  Front[Frontend React]
-  API[API Backend]
-  Sync[Sync Server]
-  Engine[Underlayer Engine]
-  DB[(Database)]
-  Sessions[(Sessions)]
-  Storage[(Object Storage)]
+flowchart TB;
+  Front[Frontend React];
+  API[API Backend];
+  Sync[Sync Server];
+  Engine[Underlayer Engine];
+  DB[(Database)];
+  Sessions[(Sessions)];
+  Storage[(Object Storage)];
 
-  Front -->|HTTP| API
-  Front -->|WebSocket| Sync
+  Front -->|HTTP| API;
+  Front -->|WebSocket| Sync;
 
-  API --> Engine
-  API --> DB
-  Sync --> Sessions
+  API --> Engine;
+  API --> DB;
+  Sync --> Sessions;
 
-  Engine --> Storage
+  Engine --> Storage;
 ```
 
 La séparation actuelle entre composants, hooks, services et serveur permet de remplacer progressivement les éléments simulés sans réécrire le parcours utilisateur.
