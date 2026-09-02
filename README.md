@@ -39,7 +39,7 @@ Une interface d'administration permet en parallèle de superviser les sessions e
 
 L'application est composée d'un frontend React et d'un serveur Node.js chargé de la gestion des sessions, des uploads et de la synchronisation temps réel.
 
-```
+```mermaid
 flowchart TB
     Front[Frontend React]
     Admin[Interface Admin]
