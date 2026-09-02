@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
 import Button from '@/components/common/Button';
-
 import { useLanguage } from '@/i18n/useLanguage';
 
 interface CreateDemoPanelProps {
@@ -15,14 +14,12 @@ const CLOSE_ANIMATION_DURATION = 140;
 const COPY_FEEDBACK_DURATION = 2000;
 
 const CreateDemoPanel = ({ sessionId, onClose }: CreateDemoPanelProps) => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
 
   const [isCopied, setIsCopied] = useState(false);
-
   const [isClosing, setIsClosing] = useState(false);
 
   const closeTimerRef = useRef<number | null>(null);
-
   const copyTimerRef = useRef<number | null>(null);
 
   const demoUrl = `${window.location.origin}/demo/${sessionId}`;
@@ -32,20 +29,16 @@ const CreateDemoPanel = ({ sessionId, onClose }: CreateDemoPanelProps) => {
     setIsCopied(false);
 
     return () => {
-      if (closeTimerRef.current) {
-        window.clearTimeout(closeTimerRef.current);
-      }
-
-      if (copyTimerRef.current) {
-        window.clearTimeout(copyTimerRef.current);
-      }
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+      if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
     };
   }, [sessionId]);
 
+  /**
+   * Garde le panneau affiché le temps de jouer l'animation de fermeture.
+   */
   const handleClose = () => {
-    if (isClosing) {
-      return;
-    }
+    if (isClosing) return;
 
     setIsClosing(true);
 
@@ -59,9 +52,7 @@ const CreateDemoPanel = ({ sessionId, onClose }: CreateDemoPanelProps) => {
 
     setIsCopied(true);
 
-    if (copyTimerRef.current) {
-      window.clearTimeout(copyTimerRef.current);
-    }
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
 
     copyTimerRef.current = window.setTimeout(() => {
       setIsCopied(false);
@@ -74,20 +65,18 @@ const CreateDemoPanel = ({ sessionId, onClose }: CreateDemoPanelProps) => {
     <section className={panelClassName}>
       <div className="createDemoPanel__header">
         <div>
-          <span className="createDemoPanel__eyebrow">Nouvelle démonstration</span>
+          <span className="createDemoPanel__eyebrow">{t.admin.createDemo.eyebrow}</span>
 
-          <h2 className="createDemoPanel__title">Inviter un utilisateur</h2>
+          <h2 className="createDemoPanel__title">{t.admin.createDemo.title}</h2>
 
-          <p className="createDemoPanel__description">
-            Partagez ce lien avec le prospect pour démarrer la démonstration.
-          </p>
+          <p className="createDemoPanel__description">{t.admin.createDemo.description}</p>
         </div>
 
         <button
           type="button"
           className="createDemoPanel__close"
           onClick={handleClose}
-          aria-label={language === 'fr' ? 'Fermer' : 'Close'}
+          aria-label={t.admin.createDemo.close}
         >
           ×
         </button>
@@ -95,13 +84,7 @@ const CreateDemoPanel = ({ sessionId, onClose }: CreateDemoPanelProps) => {
 
       <div className="createDemoPanel__share">
         <div className="createDemoPanel__qr">
-          <QRCodeSVG
-            value={demoUrl}
-            size={180}
-            level="M"
-            marginSize={2}
-            title={language === 'fr' ? 'QR code de la démonstration' : 'Demo QR code'}
-          />
+          <QRCodeSVG value={demoUrl} size={180} level="M" marginSize={2} title={t.admin.createDemo.qrTitle} />
         </div>
 
         <div className="createDemoPanel__url">
@@ -114,13 +97,12 @@ const CreateDemoPanel = ({ sessionId, onClose }: CreateDemoPanelProps) => {
             void handleCopy();
           }}
         >
-          {isCopied ? 'Lien copié !' : 'Copier le lien'}
+          {isCopied ? t.admin.createDemo.copied : t.admin.createDemo.copy}
         </Button>
       </div>
 
       <div className="createDemoPanel__session">
-        <span>Session</span>
-
+        <span>{t.admin.createDemo.session}</span>
         <code>{sessionId}</code>
       </div>
     </section>

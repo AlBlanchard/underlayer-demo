@@ -4,8 +4,9 @@ import DemoProgress from '@/components/common/DemoProgress';
 import { useLanguage } from '@/i18n/useLanguage';
 
 import type { AdminSession } from '../types/admin-session';
-
-import { getAdminProgressIndex, getSessionStatusLabel } from '../utils/session-status';
+import { getAdminProgressSteps } from '../utils/admin-progress';
+import { formatSessionTime } from '../utils/session-date';
+import { getAdminProgressIndex } from '../utils/session-status';
 
 interface SessionCardProps {
   session: AdminSession;
@@ -24,59 +25,31 @@ const SessionCard = ({ session, onClose }: SessionCardProps) => {
   const closeTimerRef = useRef<number | null>(null);
   const copyTimerRef = useRef<number | null>(null);
 
-  const progressSteps = [
-    {
-      id: 'identity',
-      label: t.admin.progress.identity,
-      role: 'viewer',
-    },
-    {
-      id: 'content',
-      label: t.admin.progress.content,
-      role: 'viewer',
-    },
-    {
-      id: 'creator',
-      label: t.admin.progress.creator,
-      role: 'creator',
-    },
-    {
-      id: 'analysis',
-      label: t.admin.progress.analysis,
-      role: 'creator',
-    },
-    {
-      id: 'result',
-      label: t.admin.progress.result,
-      role: 'creator',
-    },
-  ] as const;
+  const progressSteps = getAdminProgressSteps(t);
+  const progressIndex = getAdminProgressIndex(session.status);
 
-  const username = session.viewer?.username ?? (language === 'fr' ? 'Utilisateur en attente' : 'Waiting for user');
-
-  const locale = language === 'fr' ? 'fr-FR' : 'en-US';
-
-  const updatedAt = new Date(session.updatedAt).toLocaleTimeString(locale, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
-  const createdAt = new Date(session.createdAt).toLocaleTimeString(locale, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
+  const username = session.viewer?.username ?? t.admin.session.waitingUser;
+  const updatedAt = formatSessionTime(session.updatedAt, language);
+  const createdAt = formatSessionTime(session.createdAt, language);
   const demoUrl = `${window.location.origin}/demo/${session.id}`;
+
+  const statusLabels = {
+    'waiting-for-viewer': t.admin.status.waitingForViewer,
+    'viewer-connected': t.admin.status.viewerConnected,
+    encoding: t.admin.status.encoding,
+    'content-ready': t.admin.status.contentReady,
+    'waiting-for-upload': t.admin.status.waitingForUpload,
+    analysing: t.admin.status.analysing,
+    identified: t.admin.status.identified,
+    error: t.admin.status.error,
+  };
+
+  const statusLabel = statusLabels[session.status];
 
   useEffect(() => {
     return () => {
-      if (closeTimerRef.current) {
-        window.clearTimeout(closeTimerRef.current);
-      }
-
-      if (copyTimerRef.current) {
-        window.clearTimeout(copyTimerRef.current);
-      }
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+      if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
     };
   }, []);
 
@@ -85,15 +58,16 @@ const SessionCard = ({ session, onClose }: SessionCardProps) => {
 
     setIsCopied(true);
 
-    if (copyTimerRef.current) {
-      window.clearTimeout(copyTimerRef.current);
-    }
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
 
     copyTimerRef.current = window.setTimeout(() => {
       setIsCopied(false);
     }, COPY_FEEDBACK_DURATION);
   };
 
+  /**
+   * Garde la carte affichée le temps de jouer l'animation avant sa suppression.
+   */
   const handleCloseSession = () => {
     if (isRemoving) return;
 
@@ -112,12 +86,11 @@ const SessionCard = ({ session, onClose }: SessionCardProps) => {
         <div className="sessionCard__header">
           <div className="sessionCard__identity">
             <span className="sessionCard__eyebrow">Session</span>
-
             <h2 className="sessionCard__title">{username}</h2>
           </div>
 
           <div className="sessionCard__headerRight">
-            <span className="sessionCard__status">{getSessionStatusLabel(session.status, language)}</span>
+            <span className="sessionCard__status">{statusLabel}</span>
 
             <span className="sessionCard__chevron" aria-hidden="true">
               ↓
@@ -131,56 +104,47 @@ const SessionCard = ({ session, onClose }: SessionCardProps) => {
         </div>
 
         <div className="sessionCard__progress">
-          <DemoProgress steps={progressSteps} currentIndex={getAdminProgressIndex(session.status)} compact />
+          <DemoProgress steps={progressSteps} currentIndex={progressIndex} compact />
         </div>
       </summary>
 
       <div className="sessionCard__details">
         {session.screenshotPreviewUrl ? (
           <div className="sessionCard__preview">
-            <span className="sessionCard__sectionLabel">
-              {language === 'fr' ? 'Dernière capture analysée' : 'Last analysed screenshot'}
-            </span>
+            <span className="sessionCard__sectionLabel">{t.admin.session.lastScreenshot}</span>
 
-            <img
-              src={session.screenshotPreviewUrl}
-              alt={language === 'fr' ? 'Capture envoyée pour analyse' : 'Screenshot submitted for analysis'}
-            />
+            <img src={session.screenshotPreviewUrl} alt={t.admin.session.screenshotAlt} />
           </div>
         ) : (
-          <div className="sessionCard__emptyPreview">
-            {language === 'fr' ? 'Aucune capture envoyée.' : 'No screenshot submitted.'}
-          </div>
+          <div className="sessionCard__emptyPreview">{t.admin.session.noScreenshot}</div>
         )}
 
         <dl className="sessionCard__data">
           <div>
-            <dt>{language === 'fr' ? 'Utilisateur' : 'User'}</dt>
+            <dt>{t.admin.session.user}</dt>
             <dd>{session.viewer?.username ?? '—'}</dd>
           </div>
 
           <div>
-            <dt>{language === 'fr' ? 'Résultat' : 'Result'}</dt>
+            <dt>{t.admin.session.result}</dt>
             <dd>{session.identifiedViewer?.username ?? '—'}</dd>
           </div>
 
           <div>
-            <dt>{language === 'fr' ? 'Créée à' : 'Created at'}</dt>
+            <dt>{t.admin.session.createdAt}</dt>
             <dd>{createdAt}</dd>
           </div>
         </dl>
 
         {session.identifiedViewer && (
           <div className="sessionCard__result">
-            <span>{language === 'fr' ? 'Source identifiée' : 'Source identified'}</span>
+            <span>{t.admin.session.sourceIdentified}</span>
             <strong>{session.identifiedViewer.username}</strong>
           </div>
         )}
 
         <div className="sessionCard__share">
-          <span className="sessionCard__sectionLabel">
-            {language === 'fr' ? 'Lien de la démonstration' : 'Demo link'}
-          </span>
+          <span className="sessionCard__sectionLabel">{t.admin.session.demoLink}</span>
 
           <div className="sessionCard__shareRow">
             <span className="sessionCard__url">{demoUrl}</span>
@@ -192,7 +156,7 @@ const SessionCard = ({ session, onClose }: SessionCardProps) => {
                 void handleCopyUrl();
               }}
             >
-              {isCopied ? (language === 'fr' ? 'Copié !' : 'Copied!') : language === 'fr' ? 'Copier' : 'Copy'}
+              {isCopied ? t.admin.session.copied : t.admin.session.copy}
             </button>
           </div>
         </div>
@@ -204,7 +168,7 @@ const SessionCard = ({ session, onClose }: SessionCardProps) => {
             onClick={handleCloseSession}
             disabled={isRemoving}
           >
-            {language === 'fr' ? 'Fermer la session' : 'Close session'}
+            {t.admin.session.close}
           </button>
         </div>
       </div>
