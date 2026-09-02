@@ -1,15 +1,17 @@
 import { useState } from 'react';
 
-import type { AdminSession } from '../types/admin-session';
-
-import { useAdminSessions } from '../hooks/useAdminSessions';
+import Button from '@/components/common/Button';
+import AppHeader from '@/components/layout/AppHeader';
+import { useLanguage } from '@/i18n/useLanguage';
 
 import CreateDemoPanel from '../components/CreateDemoPanel';
-import AppHeader from '@/components/layout/AppHeader';
 import SessionCard from '../components/SessionCard';
-import Button from '@/components/common/Button';
+import { useAdminSessions } from '../hooks/useAdminSessions';
+import type { AdminSession } from '../types/admin-session';
 
 const AdminPage = () => {
+  const { t } = useLanguage();
+
   const [createdSession, setCreatedSession] = useState<AdminSession | null>(null);
 
   const { sessions, createSession, closeSession, isCreating } = useAdminSessions();
@@ -17,7 +19,6 @@ const AdminPage = () => {
   const handleCreateSession = async () => {
     try {
       const session = await createSession();
-
       setCreatedSession(session);
     } catch (error) {
       console.error('Unable to create demo session.', error);
@@ -30,18 +31,19 @@ const AdminPage = () => {
 
       <main className="adminPage__main">
         <section className="adminPage__intro">
-          <span className="adminPage__eyebrow">Administration</span>
+          <span className="adminPage__eyebrow">{t.admin.page.eyebrow}</span>
 
-          <h1 className="adminPage__title">Supervision des démonstrations</h1>
+          <h1 className="adminPage__title">{t.admin.page.title}</h1>
 
-          <p className="adminPage__description">Suivez les sessions actives et consultez leur progression.</p>
+          <p className="adminPage__description">{t.admin.page.description}</p>
         </section>
 
         <section className="adminPage__sessions">
           <div className="adminPage__sessionsHeader">
-            <h2>Sessions</h2>
-
-            <span>{sessions.length} actives</span>
+            <h2>{t.admin.page.sessions}</h2>
+            <span>
+              {sessions.length} {t.admin.page.active}
+            </span>
           </div>
 
           <div className="adminPage__createButton">
@@ -52,7 +54,7 @@ const AdminPage = () => {
                 void handleCreateSession();
               }}
             >
-              {isCreating ? 'Création...' : 'Nouvelle démo'}
+              {isCreating ? t.admin.page.creating : t.admin.page.newDemo}
             </Button>
           </div>
 
@@ -67,9 +69,8 @@ const AdminPage = () => {
 
           {sessions.length === 0 ? (
             <div className="adminPage__empty">
-              <strong>Aucune session active</strong>
-
-              <p>Les démonstrations apparaîtront ici automatiquement lorsqu'un utilisateur se connectera.</p>
+              <strong>{t.admin.page.emptyTitle}</strong>
+              <p>{t.admin.page.emptyDescription}</p>
             </div>
           ) : (
             <div className="adminPage__grid">
