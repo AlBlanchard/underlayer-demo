@@ -25,3 +25,6 @@ dist-ssr
 
 # WS upload
 sync-server/uploads/
+
+structure.txt
+*.tsbuildinfo
