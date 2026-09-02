@@ -1,0 +1,19 @@
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        VITE_DEMO_SYNC_URL: ws://localhost:3000
+        VITE_DEMO_API_URL: http://localhost:3000
+    container_name: underlayer-frontend
+    ports:
+      - '8080:80'
+    depends_on:
+      - sync-server
+
+  sync-server:
+    build:
+      context: ./sync-server
+    container_name: underlayer-sync-server
+    ports:
+      - '3000:3000'

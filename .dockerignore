@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.gitignore
+.env
+.env.*
+sync-server/node_modules
+sync-server/dist
+sync-server/uploads
+npm-debug.log*
