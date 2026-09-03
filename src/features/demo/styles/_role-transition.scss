@@ -1,0 +1,141 @@
+@use '@/styles/abstracts/breakpoints' as bp;
+
+.roleTransition {
+  width: 100%;
+  max-width: 520px;
+
+  margin-inline: auto;
+  padding: 0 1.25rem max(1.5rem, env(safe-area-inset-bottom));
+
+  &__content {
+    padding: var(--space-lg);
+
+    background: linear-gradient(180deg, rgb(85 214 165 / 6%), transparent 55%), var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-panel);
+
+    box-shadow: 0 16px 48px rgb(0 0 0 / 16%);
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+
+    padding: 0.4rem 0.7rem;
+
+    color: var(--color-success);
+    background: var(--color-success-soft);
+
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin-top: var(--space-lg);
+
+    font-size: clamp(2rem, 10vw, 2.75rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  &__description {
+    margin-top: var(--space-lg);
+
+    color: var(--color-text-muted);
+
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+
+    margin-top: var(--space-xl);
+  }
+
+  &__back {
+    order: 2;
+
+    width: 100%;
+    min-height: 44px;
+    padding: 0.875rem 1rem;
+
+    color: var(--color-text-muted);
+    background: transparent;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+
+    cursor: pointer;
+
+    font: inherit;
+    font-weight: 600;
+
+    transition:
+      color var(--transition-fast),
+      background var(--transition-fast),
+      border-color var(--transition-fast);
+
+    &:focus-visible {
+      outline: 2px solid var(--color-success);
+      outline-offset: 3px;
+    }
+  }
+
+  .button {
+    order: 1;
+    min-height: 44px;
+  }
+
+  @include bp.desktop {
+    max-width: 620px;
+
+    &__content {
+      padding: var(--space-xl);
+
+      box-shadow: 0 24px 80px rgb(0 0 0 / 18%);
+    }
+
+    &__title {
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+    }
+
+    &__description {
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    &__actions {
+      display: grid;
+      grid-template-columns:
+        auto
+        minmax(0, 1fr);
+
+      align-items: center;
+    }
+
+    &__back {
+      order: 1;
+
+      width: auto;
+      min-width: 120px;
+
+      &:hover {
+        color: var(--color-text);
+        background: var(--color-surface-raised);
+
+        border-color: var(--color-border-strong);
+      }
+    }
+
+    .button {
+      order: 2;
+    }
+  }
+}

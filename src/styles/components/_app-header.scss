@@ -1,0 +1,96 @@
+@use '../abstracts/breakpoints' as bp;
+
+.appHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+
+  width: 100%;
+  min-height: 64px;
+  padding: max(0.75rem, env(safe-area-inset-top)) 1.25rem 0.75rem;
+
+  background: rgb(11 13 18 / 80%);
+
+  border-bottom: 1px solid var(--color-border);
+
+  backdrop-filter: blur(16px);
+
+  &__brand {
+    color: var(--color-text);
+
+    font-size: 1.05rem;
+    font-weight: 750;
+    letter-spacing: -0.03em;
+  }
+
+  &__languageSwitcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+
+    padding: 0.25rem;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+  }
+
+  &__languageButton {
+    min-width: 2.5rem;
+    min-height: 2.25rem;
+    padding-inline: 0.65rem;
+
+    color: var(--color-text-muted);
+    background: transparent;
+
+    border: 0;
+    border-radius: 999px;
+
+    cursor: pointer;
+
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    transition:
+      color var(--transition-fast),
+      background var(--transition-fast),
+      box-shadow var(--transition-fast);
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    &--active {
+      color: #fff;
+      background: var(--color-primary);
+
+      box-shadow: 0 2px 8px rgb(119 103 255 / 25%);
+    }
+  }
+
+  @include bp.desktop {
+    min-height: 72px;
+
+    padding: 0 clamp(2rem, 4vw, 3rem);
+
+    &__brand {
+      font-size: 1.15rem;
+    }
+
+    &__languageButton {
+      min-width: 2.75rem;
+    }
+
+    @media (hover: hover) {
+      &__languageButton:hover:not(.appHeader__languageButton--active) {
+        color: var(--color-text);
+
+        background: var(--color-surface-raised);
+      }
+    }
+  }
+}

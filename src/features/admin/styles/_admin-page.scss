@@ -1,0 +1,118 @@
+@use '@/styles/abstracts/breakpoints' as bp;
+
+.adminPage {
+  min-height: 100svh;
+
+  background: radial-gradient(circle at 50% 0%, rgb(119 103 255 / 8%), transparent 28rem), var(--color-background);
+
+  &__main {
+    width: 100%;
+    max-width: var(--content-width);
+
+    margin-inline: auto;
+    padding: var(--space-xl) 1.25rem var(--space-2xl);
+  }
+
+  &__intro {
+    max-width: 720px;
+  }
+
+  &__eyebrow {
+    color: var(--color-primary);
+
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin-top: var(--space-sm);
+
+    font-size: clamp(2.25rem, 10vw, 3rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  &__description {
+    margin-top: var(--space-lg);
+
+    color: var(--color-text-muted);
+
+    line-height: 1.6;
+  }
+
+  &__sessions {
+    margin-top: var(--space-2xl);
+  }
+
+  &__sessionsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+
+    margin-bottom: var(--space-lg);
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    span {
+      color: var(--color-text-muted);
+
+      font-size: 0.875rem;
+    }
+  }
+
+  &__createButton {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-lg);
+
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+
+    & .button {
+      max-width: 256px;
+    }
+  }
+
+  &__grid {
+    margin-top: var(--space-2xl);
+    display: grid;
+    gap: var(--space-lg);
+
+    align-items: start;
+
+    @include bp.desktop {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2xl);
+
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  @include bp.desktop {
+    &__main {
+      padding: var(--space-2xl) var(--space-xl);
+    }
+
+    &__title {
+      font-size: 4rem;
+    }
+
+    &__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

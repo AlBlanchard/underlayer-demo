@@ -1,0 +1,135 @@
+@use '@/styles/abstracts/breakpoints' as bp;
+
+.viewerIdentity {
+  width: 100%;
+  max-width: 480px;
+
+  margin-inline: auto;
+
+  &__content {
+    padding-block: var(--space-xl);
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+
+    padding: 0.4rem 0.7rem;
+
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin-top: var(--space-lg);
+
+    font-size: clamp(2.25rem, 11vw, 3rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  &__description {
+    margin-top: var(--space-lg);
+
+    color: var(--color-text-muted);
+
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+
+    margin-top: var(--space-xl);
+  }
+
+  &__label {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  &__input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.875rem 1rem;
+
+    color: var(--color-text);
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+
+    font: inherit;
+    font-size: 1rem;
+
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+
+    &::placeholder {
+      color: var(--color-text-subtle);
+    }
+
+    &:focus {
+      border-color: var(--color-primary);
+
+      outline: none;
+
+      box-shadow: 0 0 0 3px var(--color-primary-soft);
+    }
+  }
+
+  &__submit {
+    margin-top: 0.5rem;
+    padding: 0.875rem 1rem;
+
+    border: 0;
+    border-radius: 0.75rem;
+
+    background: var(--color-primary);
+
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  &__error {
+    margin-top: var(--space-sm);
+
+    color: var(--color-danger);
+
+    font-size: 0.875rem;
+  }
+
+  .button {
+    min-height: 48px;
+    margin-top: var(--space-sm);
+  }
+
+  @include bp.desktop {
+    max-width: 520px;
+
+    &__content {
+      padding-block: var(--space-2xl);
+    }
+
+    &__title {
+      font-size: 3.5rem;
+    }
+
+    &__description {
+      font-size: 1rem;
+    }
+  }
+}

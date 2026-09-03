@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# WS upload
+sync-server/uploads/
+
+structure.txt
+*.tsbuildinfo

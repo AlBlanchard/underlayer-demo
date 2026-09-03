@@ -1,2 +1,28 @@
 @use './base/reset';
 @use './base/global';
+@use './base/tokens';
+
+@use './components/demo-panel';
+@use './components/button';
+@use './components/app-header';
+@use './components/demo-progress';
+
+@use '@/features/admin/styles/qr-code-panel';
+@use '@/features/admin/styles/user-connected';
+
+// ADMIN
+@use '@/features/admin/styles/encoding-progress';
+@use '@/features/admin/styles/admin-page';
+@use '@/features/admin/styles/session-card';
+@use '@/features/admin/styles/create-demo-panel';
+
+// DEMO
+@use '@/features/demo/styles/analysis-progress';
+@use '@/features/demo/styles/demo-page';
+@use '@/features/demo/styles/fullscreen-image';
+@use '@/features/demo/styles/identification-result';
+@use '@/features/demo/styles/preparing-content';
+@use '@/features/demo/styles/protected-content';
+@use '@/features/demo/styles/screenshot-upload';
+@use '@/features/demo/styles/viewer-identity';
+@use '@/features/demo/styles/role-transition';
